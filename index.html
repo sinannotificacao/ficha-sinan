@@ -1,205 +1,877 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ficha SINAN - Violência Interpessoal / Autoprovocada</title>
-<link rel="stylesheet" href="styles.css">
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script defer src="app.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ficha SINAN - Violência Interpessoal / Autoprovocada</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script defer src="app.js"></script>
 </head>
 <body>
-
-<!-- Topbar -->
-<header class="topbar no-print">
-  <div class="topbar-info">
-    <h1>Ficha SINAN editável</h1>
-    <p>Modelo web baseado no PDF. Preencha e exporte em PDF.</p>
-  </div>
-  <div class="topbar-actions">
-    <button id="fillSampleBtn" type="button">Preencher exemplo</button>
-    <button id="clearBtn" type="button" class="secondary">Limpar</button>
-    <button id="exportBtn" type="button" class="primary">Exportar PDF</button>
-  </div>
-</header>
-
-<main>
-<div id="document" class="document">
-  <section class="page">
-
-    <!-- Cabeçalho -->
-    <div class="form-header">
-      <div class="logo-box">
-        <img src="img/logo-prefeitura.png" alt="Logo Prefeitura" class="logo-orgao">
-      </div>
-      <div class="header-main">
-        <div class="title">FICHA DE NOTIFICAÇÃO INDIVIDUAL</div>
-        <div class="subtitle">VIOLÊNCIA INTERPESSOAL / AUTOPROVOCADA</div>
-      </div>
-      <div class="header-right">
-        <strong>SINAN</strong>
-        <span>Sistema de Informação de Agravos de Notificação</span>
-      </div>
+  <header class="topbar no-print">
+    <div class="topbar-copy">
+      <h1>Ficha SINAN editável</h1>
+      <p>Preencha online, troque a logo se quiser e exporte em PDF pronto para impressão.</p>
     </div>
+    <div class="topbar-actions">
+      <input id="logoInput" type="file" accept="image/*" hidden>
+      <button id="changeLogoBtn" type="button" class="secondary">Trocar logo</button>
+      <button id="fillSampleBtn" type="button">Preencher exemplo</button>
+      <button id="clearBtn" type="button" class="secondary">Limpar</button>
+      <button id="exportBtn" type="button" class="primary">Exportar PDF</button>
+    </div>
+  </header>
 
-    <!-- DADOS GERAIS -->
-    <section class="form-block">
-      <h2>Dados Gerais</h2>
-      <div class="grid-3cols">
-        <div>
-          <label>Tipo de Notificação</label>
-          <input type="text">
-        </div>
-        <div>
-          <label>Agravos / Doença</label>
-          <input type="text">
-        </div>
-        <div>
-          <label>Código CID-10</label>
-          <input type="text">
-        </div>
-      </div>
-      <div class="grid-3cols">
-        <div>
-          <label>Data da Notificação</label>
-          <input type="date">
-        </div>
-        <div>
-          <label>UF</label>
-          <input type="text">
-        </div>
-        <div>
-          <label>Município</label>
-          <input type="text">
-        </div>
-      </div>
-      <div class="grid-2cols">
-        <div>
-          <label>Código IBGE</label>
-          <input type="text">
-        </div>
-        <div>
-          <label>Unidade Notificadora</label>
-          <input type="text">
-        </div>
-      </div>
-    </section>
+  <main class="main-wrap">
+    <form id="sinanForm">
+      <div id="document" class="document">
+        
+<section class="page">
+  <div class="form-header">
+    <div class="logo-box">
+      <img id="logoPreview" src="img/logo-prefeitura.png" alt="Logo do órgão" class="logo-orgao">
+      <div id="logoFallback" class="logo-fallback">PREFEITURA / ÓRGÃO</div>
+    </div>
+    <div class="header-main">
+      <div class="title">FICHA DE NOTIFICAÇÃO INDIVIDUAL</div>
+      <div class="subtitle">VIOLÊNCIA INTERPESSOAL / AUTOPROVOCADA</div>
+    </div>
+    <div class="header-right">
+      <strong>SINAN</strong>
+      <span>Sistema de Informação de Agravos de Notificação</span>
+    </div>
+  </div>
 
-    <!-- NOTIFICAÇÃO INDIVIDUAL -->
-    <section class="form-block">
-      <h2>Notificação Individual</h2>
-      <div class="grid-4cols">
-        <div>
-          <label>Nome do Paciente</label>
-          <input type="text">
-        </div>
-        <div>
-          <label>Data de Nascimento</label>
-          <input type="date">
-        </div>
-        <div>
-          <label>Idade</label>
-          <input type="number">
-        </div>
-        <div>
-          <label>Tipo</label>
-          <input type="text">
-        </div>
-      </div>
-      <div class="grid-4cols">
-        <div>
-          <label>Sexo</label>
-          <select>
-            <option value="">Selecione</option>
-            <option value="Feminino">Feminino</option>
-            <option value="Masculino">Masculino</option>
-          </select>
-        </div>
-        <div>
-          <label>Gestante</label>
-          <select>
-            <option value="">Selecione</option>
-            <option value="Não">Não</option>
-            <option value="Sim">Sim</option>
-          </select>
-        </div>
-        <div>
-          <label>Raça / Cor</label>
-          <input type="text">
-        </div>
-        <div>
-          <label>Escolaridade</label>
-          <input type="text">
-        </div>
-      </div>
-      <div class="grid-2cols">
-        <div>
-          <label>Número do Cartão SUS</label>
-          <input type="text">
-        </div>
-        <div>
-          <label>Nome da Mãe</label>
-          <input type="text">
-        </div>
-      </div>
-    </section>
+  <div class="alert-box">
+    Caso suspeito ou confirmado de violência doméstica / intrafamiliar, sexual, autoprovocada, tráfico de pessoas, trabalho escravo, trabalho infantil, tortura e intervenção legal.
+    <br>Modelo web para preenchimento online e geração de PDF.
+  </div>
 
-    <!-- DADOS DA RESIDÊNCIA -->
-    <section class="form-block">
-      <h2>Dados da Residência</h2>
-      <div class="grid-3cols">
-        <div>
-          <label>UF</label>
-          <input type="text">
-        </div>
-        <div>
-          <label>Município</label>
-          <input type="text">
-        </div>
-        <div>
-          <label>Código IBGE</label>
-          <input type="text">
-        </div>
-      </div>
-      <div class="grid-4cols">
-        <div>
-          <label>Distrito</label>
-          <input type="text">
-        </div>
-        <div>
-          <label>Bairro</label>
-          <input type="text">
-        </div>
-        <div>
-          <label>Logradouro</label>
-          <input type="text">
-        </div>
-        <div>
-          <label>Número</label>
-          <input type="text">
-        </div>
-      </div>
-      <div class="grid-3cols">
-        <div>
-          <label>Complemento</label>
-          <input type="text">
-        </div>
-        <div>
-          <label>Ponto de referência</label>
-          <input type="text">
-        </div>
-        <div>
-          <label>CEP</label>
-          <input type="text">
-        </div>
-      </div>
-    </section>
-
-    <!-- OBSERVAÇÕES E OUTROS BLOCOS PODEM SER ADICIONADOS DA MESMA FORMA -->
-
-  </section>
+  <div class="section">
+    <div class="section-title">Dados gerais</div>
+    <div class="grid-3">
+<div class="field field-block">
+  <span>1. Tipo de notificação</span>
+  <div class="check-grid cols-1">
+    <label class="check-option">
+  <input type="radio" name="tipoNotificacao" value="2 - Individual" data-sample-checked="true">
+  <span>2 - Individual</span>
+</label>
+  </div>
 </div>
-</main>
+<label class="field">
+  <span>2. Agravo / doença</span>
+  <input type="text" id="agravoDoenca" name="agravoDoenca" data-sample="Violência interpessoal / autoprovocada">
+</label>
+<label class="field">
+  <span>Código CID-10</span>
+  <input type="text" id="cid10" name="cid10" data-sample="Y09">
+</label>
+</div>
+    <div class="grid-4">
+<label class="field">
+  <span>3. Data da notificação</span>
+  <input type="date" id="dataNotificacao" name="dataNotificacao" data-sample="2026-03-18">
+</label>
+<label class="field">
+  <span>4. UF</span>
+  <input type="text" id="ufNotificacao" name="ufNotificacao" data-sample="MG">
+</label>
+<label class="field">
+  <span>5. Município de notificação</span>
+  <input type="text" id="municipioNotificacao" name="municipioNotificacao" data-sample="Belo Horizonte">
+</label>
+<label class="field">
+  <span>Código IBGE</span>
+  <input type="text" id="ibgeNotificacao" name="ibgeNotificacao" data-sample="3106200">
+</label>
+</div>
+    <div class="field field-block">
+  <span>6. Unidade notificadora</span>
+  <div class="check-grid cols-4">
+    <label class="check-option">
+  <input type="radio" name="unidadeNotificadora" value="1 - Unidade de saúde" data-sample-checked="true">
+  <span>1 - Unidade de saúde</span>
+</label><label class="check-option">
+  <input type="radio" name="unidadeNotificadora" value="2 - Unidade de assistência social">
+  <span>2 - Unidade de assistência social</span>
+</label><label class="check-option">
+  <input type="radio" name="unidadeNotificadora" value="3 - Estabelecimento de ensino">
+  <span>3 - Estabelecimento de ensino</span>
+</label><label class="check-option">
+  <input type="radio" name="unidadeNotificadora" value="4 - Conselho tutelar">
+  <span>4 - Conselho tutelar</span>
+</label><label class="check-option">
+  <input type="radio" name="unidadeNotificadora" value="5 - Unidade de saúde indígena">
+  <span>5 - Unidade de saúde indígena</span>
+</label><label class="check-option">
+  <input type="radio" name="unidadeNotificadora" value="6 - Centro especializado de atendimento à mulher">
+  <span>6 - Centro especializado de atendimento à mulher</span>
+</label><label class="check-option">
+  <input type="radio" name="unidadeNotificadora" value="7 - Outros">
+  <span>7 - Outros</span>
+</label>
+  </div>
+</div>
+    <div class="grid-3">
+<label class="field">
+  <span>7. Nome da unidade notificadora</span>
+  <input type="text" id="nomeUnidadeNotificadora" name="nomeUnidadeNotificadora" data-sample="Unidade de Saúde Exemplo">
+</label>
+<label class="field">
+  <span>Código da unidade</span>
+  <input type="text" id="codigoUnidade" name="codigoUnidade" data-sample="12345">
+</label>
+<label class="field">
+  <span>9. Data da ocorrência da violência</span>
+  <input type="date" id="dataOcorrenciaViolencia" name="dataOcorrenciaViolencia" data-sample="2026-03-17">
+</label>
+</div>
+    <div class="grid-2">
+<label class="field">
+  <span>8. Unidade de saúde</span>
+  <input type="text" id="unidadeSaude" name="unidadeSaude" data-sample="UBS Central">
+</label>
+<label class="field">
+  <span>Código CNES</span>
+  <input type="text" id="codigoCnes" name="codigoCnes" data-sample="9876543">
+</label>
+</div>
+  </div>
 
+  <div class="section">
+    <div class="section-title">Notificação individual</div>
+    <div class="grid-2">
+<label class="field">
+  <span>10. Nome do paciente</span>
+  <input type="text" id="nomePaciente" name="nomePaciente" data-sample="Paciente Exemplo">
+</label>
+<label class="field">
+  <span>11. Data de nascimento</span>
+  <input type="date" id="dataNascimento" name="dataNascimento" data-sample="2000-05-10">
+</label>
+</div>
+    <div class="grid-5">
+<label class="field">
+  <span>12. Idade</span>
+  <input type="number" id="idade" name="idade" data-sample="25">
+</label>
+<label class="field">
+  <span>12. Tipo</span>
+  <select id="tipoIdade" name="tipoIdade" data-sample="Ano">
+    <option value=""></option><option value="Ano" selected>Ano</option><option value="Mês">Mês</option><option value="Dia">Dia</option>
+  </select>
+</label>
+<label class="field">
+  <span>13. Sexo</span>
+  <select id="sexo" name="sexo" data-sample="Feminino">
+    <option value=""></option><option value="Feminino" selected>Feminino</option><option value="Masculino">Masculino</option><option value="Ignorado">Ignorado</option>
+  </select>
+</label>
+<label class="field">
+  <span>14. Gestante</span>
+  <select id="gestante" name="gestante" data-sample="Não">
+    <option value=""></option><option value="Sim">Sim</option><option value="Não" selected>Não</option><option value="Ignorado">Ignorado</option>
+  </select>
+</label>
+<label class="field">
+  <span>15. Raça / cor</span>
+  <select id="racaCor" name="racaCor" data-sample="Parda">
+    <option value=""></option><option value="Branca">Branca</option><option value="Preta">Preta</option><option value="Parda" selected>Parda</option><option value="Amarela">Amarela</option><option value="Indígena">Indígena</option><option value="Ignorado">Ignorado</option>
+  </select>
+</label>
+</div>
+    <div class="grid-3">
+<label class="field">
+  <span>16. Escolaridade</span>
+  <select id="escolaridade" name="escolaridade" data-sample="Ensino médio completo">
+    <option value=""></option><option value="Ensino médio completo" selected>Ensino médio completo</option><option value="Ensino fundamental incompleto">Ensino fundamental incompleto</option><option value="Ensino fundamental completo">Ensino fundamental completo</option><option value="Ensino médio incompleto">Ensino médio incompleto</option><option value="Superior incompleto">Superior incompleto</option><option value="Superior completo">Superior completo</option><option value="Não se aplica">Não se aplica</option><option value="Ignorado">Ignorado</option>
+  </select>
+</label>
+<label class="field">
+  <span>17. Número do cartão SUS</span>
+  <input type="text" id="cartaoSus" name="cartaoSus" data-sample="000 0000 0000 0000">
+</label>
+<label class="field">
+  <span>18. Nome da mãe</span>
+  <input type="text" id="nomeMae" name="nomeMae" data-sample="Mãe Exemplo">
+</label>
+</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Dados da residência</div>
+    <div class="grid-4">
+<label class="field">
+  <span>19. UF</span>
+  <input type="text" id="ufResidencia" name="ufResidencia" data-sample="MG">
+</label>
+<label class="field">
+  <span>20. Município de residência</span>
+  <input type="text" id="municipioResidencia" name="municipioResidencia" data-sample="Belo Horizonte">
+</label>
+<label class="field">
+  <span>Código IBGE</span>
+  <input type="text" id="ibgeResidencia" name="ibgeResidencia" data-sample="3106200">
+</label>
+<label class="field">
+  <span>21. Distrito</span>
+  <input type="text" id="distritoResidencia" name="distritoResidencia" data-sample="Centro-Sul">
+</label>
+</div>
+    <div class="grid-4">
+<label class="field">
+  <span>22. Bairro</span>
+  <input type="text" id="bairroResidencia" name="bairroResidencia" data-sample="Funcionários">
+</label>
+<label class="field">
+  <span>23. Logradouro</span>
+  <input type="text" id="logradouroResidencia" name="logradouroResidencia" data-sample="Rua Exemplo">
+</label>
+<label class="field">
+  <span>Código</span>
+  <input type="text" id="codigoResidencia" name="codigoResidencia">
+</label>
+<label class="field">
+  <span>24. Número</span>
+  <input type="text" id="numeroResidencia" name="numeroResidencia" data-sample="100">
+</label>
+</div>
+    <div class="grid-4">
+<label class="field">
+  <span>25. Complemento</span>
+  <input type="text" id="complementoResidencia" name="complementoResidencia" data-sample="Apto 201">
+</label>
+<label class="field">
+  <span>26. Geo campo 1</span>
+  <input type="text" id="geoCampo1" name="geoCampo1">
+</label>
+<label class="field">
+  <span>27. Geo campo 2</span>
+  <input type="text" id="geoCampo2" name="geoCampo2">
+</label>
+<label class="field">
+  <span>28. Ponto de referência</span>
+  <input type="text" id="pontoReferenciaResidencia" name="pontoReferenciaResidencia" data-sample="Próximo à praça">
+</label>
+</div>
+    <div class="grid-4">
+<label class="field">
+  <span>29. CEP</span>
+  <input type="text" id="cepResidencia" name="cepResidencia" data-sample="30110-000">
+</label>
+<label class="field">
+  <span>30. Telefone</span>
+  <input type="text" id="telefoneResidencia" name="telefoneResidencia" data-sample="(31) 99999-9999">
+</label>
+<label class="field">
+  <span>31. Zona</span>
+  <select id="zonaResidencia" name="zonaResidencia" data-sample="Urbana">
+    <option value=""></option><option value="Urbana" selected>Urbana</option><option value="Rural">Rural</option><option value="Periurbana">Periurbana</option><option value="Ignorado">Ignorado</option>
+  </select>
+</label>
+<label class="field">
+  <span>32. País</span>
+  <input type="text" id="paisResidencia" name="paisResidencia" data-sample="Brasil">
+</label>
+</div>
+  </div>
+</section>
+
+        
+<section class="page">
+  <div class="section">
+    <div class="section-title">Dados complementares da pessoa atendida</div>
+    <div class="grid-2">
+<label class="field">
+  <span>33. Nome social</span>
+  <input type="text" id="nomeSocial" name="nomeSocial" data-sample="Nome social exemplo">
+</label>
+<label class="field">
+  <span>34. Ocupação</span>
+  <input type="text" id="ocupacao" name="ocupacao" data-sample="Auxiliar administrativa">
+</label>
+</div>
+    <div class="grid-3">
+<label class="field">
+  <span>35. Situação conjugal / estado civil</span>
+  <select id="estadoCivil" name="estadoCivil" data-sample="Solteiro">
+    <option value=""></option><option value="Solteiro" selected>Solteiro</option><option value="Casado/união estável">Casado/união estável</option><option value="Separado">Separado</option><option value="Viúvo">Viúvo</option><option value="Ignorado">Ignorado</option>
+  </select>
+</label>
+<label class="field">
+  <span>36. Orientação sexual</span>
+  <select id="orientacaoSexual" name="orientacaoSexual" data-sample="Heterossexual">
+    <option value=""></option><option value="Heterossexual" selected>Heterossexual</option><option value="Homossexual">Homossexual</option><option value="Bissexual">Bissexual</option><option value="Não se aplica">Não se aplica</option><option value="Ignorado">Ignorado</option>
+  </select>
+</label>
+<label class="field">
+  <span>37. Identidade de gênero</span>
+  <select id="identidadeGenero" name="identidadeGenero" data-sample="Não se aplica">
+    <option value=""></option><option value="Não se aplica" selected>Não se aplica</option><option value="Mulher cis">Mulher cis</option><option value="Homem cis">Homem cis</option><option value="Mulher trans">Mulher trans</option><option value="Homem trans">Homem trans</option><option value="Não binário">Não binário</option><option value="Ignorado">Ignorado</option>
+  </select>
+</label>
+</div>
+    <div class="grid-2">
+<label class="field">
+  <span>38. Possui deficiência / transtorno?</span>
+  <select id="possuiDeficiencia" name="possuiDeficiencia" data-sample="Não">
+    <option value=""></option><option value="Sim">Sim</option><option value="Não" selected>Não</option><option value="Ignorado">Ignorado</option>
+  </select>
+</label>
+<label class="field">
+  <span>39. Se sim, outros detalhes</span>
+  <input type="text" id="deficienciaOutros" name="deficienciaOutros">
+</label>
+</div>
+    <div class="field field-block">
+  <span>39. Se sim, qual tipo de deficiência / transtorno?</span>
+  <div class="check-grid cols-4">
+    <label class="check-option">
+  <input type="checkbox" name="deficiencias" value="Deficiência física" data-sample-checked="true">
+  <span>Deficiência física</span>
+</label><label class="check-option">
+  <input type="checkbox" name="deficiencias" value="Deficiência visual">
+  <span>Deficiência visual</span>
+</label><label class="check-option">
+  <input type="checkbox" name="deficiencias" value="Deficiência intelectual">
+  <span>Deficiência intelectual</span>
+</label><label class="check-option">
+  <input type="checkbox" name="deficiencias" value="Deficiência auditiva">
+  <span>Deficiência auditiva</span>
+</label><label class="check-option">
+  <input type="checkbox" name="deficiencias" value="Transtorno mental">
+  <span>Transtorno mental</span>
+</label><label class="check-option">
+  <input type="checkbox" name="deficiencias" value="Transtorno de comportamento">
+  <span>Transtorno de comportamento</span>
+</label><label class="check-option">
+  <input type="checkbox" name="deficiencias" value="Outras">
+  <span>Outras</span>
+</label>
+  </div>
+</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Dados da ocorrência</div>
+    <div class="grid-4">
+<label class="field">
+  <span>40. UF</span>
+  <input type="text" id="ufOcorrencia" name="ufOcorrencia" data-sample="MG">
+</label>
+<label class="field">
+  <span>41. Município de ocorrência</span>
+  <input type="text" id="municipioOcorrencia" name="municipioOcorrencia" data-sample="Belo Horizonte">
+</label>
+<label class="field">
+  <span>Código IBGE</span>
+  <input type="text" id="ibgeOcorrencia" name="ibgeOcorrencia" data-sample="3106200">
+</label>
+<label class="field">
+  <span>42. Distrito</span>
+  <input type="text" id="distritoOcorrencia" name="distritoOcorrencia">
+</label>
+</div>
+    <div class="grid-4">
+<label class="field">
+  <span>43. Bairro</span>
+  <input type="text" id="bairroOcorrencia" name="bairroOcorrencia" data-sample="Centro">
+</label>
+<label class="field">
+  <span>44. Logradouro</span>
+  <input type="text" id="logradouroOcorrencia" name="logradouroOcorrencia" data-sample="Avenida Exemplo">
+</label>
+<label class="field">
+  <span>Código</span>
+  <input type="text" id="codigoOcorrencia" name="codigoOcorrencia">
+</label>
+<label class="field">
+  <span>45. Número</span>
+  <input type="text" id="numeroOcorrencia" name="numeroOcorrencia" data-sample="250">
+</label>
+</div>
+    <div class="grid-4">
+<label class="field">
+  <span>46. Complemento</span>
+  <input type="text" id="complementoOcorrencia" name="complementoOcorrencia">
+</label>
+<label class="field">
+  <span>47. Geo campo 3</span>
+  <input type="text" id="geoCampo3" name="geoCampo3">
+</label>
+<label class="field">
+  <span>48. Geo campo 4</span>
+  <input type="text" id="geoCampo4" name="geoCampo4">
+</label>
+<label class="field">
+  <span>49. Ponto de referência</span>
+  <input type="text" id="pontoReferenciaOcorrencia" name="pontoReferenciaOcorrencia">
+</label>
+</div>
+    <div class="grid-3">
+<label class="field">
+  <span>50. Zona</span>
+  <select id="zonaOcorrencia" name="zonaOcorrencia" data-sample="Urbana">
+    <option value=""></option><option value="Urbana" selected>Urbana</option><option value="Rural">Rural</option><option value="Periurbana">Periurbana</option><option value="Ignorado">Ignorado</option>
+  </select>
+</label>
+<label class="field">
+  <span>51. Hora da ocorrência</span>
+  <input type="time" id="horaOcorrencia" name="horaOcorrencia" data-sample="18:40">
+</label>
+<label class="field">
+  <span>53. Ocorreu outras vezes?</span>
+  <select id="ocorreuOutrasVezes" name="ocorreuOutrasVezes" data-sample="Sim">
+    <option value=""></option><option value="Sim" selected>Sim</option><option value="Não">Não</option><option value="Ignorado">Ignorado</option>
+  </select>
+</label>
+</div>
+    <div class="grid-1">
+<div class="field field-block">
+  <span>52. Local de ocorrência</span>
+  <div class="check-grid cols-3">
+    <label class="check-option">
+  <input type="radio" name="localOcorrencia" value="Residência" data-sample-checked="true">
+  <span>Residência</span>
+</label><label class="check-option">
+  <input type="radio" name="localOcorrencia" value="Habitação coletiva">
+  <span>Habitação coletiva</span>
+</label><label class="check-option">
+  <input type="radio" name="localOcorrencia" value="Escola">
+  <span>Escola</span>
+</label><label class="check-option">
+  <input type="radio" name="localOcorrencia" value="Local de prática esportiva">
+  <span>Local de prática esportiva</span>
+</label><label class="check-option">
+  <input type="radio" name="localOcorrencia" value="Bar ou similar">
+  <span>Bar ou similar</span>
+</label><label class="check-option">
+  <input type="radio" name="localOcorrencia" value="Via pública">
+  <span>Via pública</span>
+</label><label class="check-option">
+  <input type="radio" name="localOcorrencia" value="Comércio / serviços">
+  <span>Comércio / serviços</span>
+</label><label class="check-option">
+  <input type="radio" name="localOcorrencia" value="Indústrias / construção">
+  <span>Indústrias / construção</span>
+</label><label class="check-option">
+  <input type="radio" name="localOcorrencia" value="Outro">
+  <span>Outro</span>
+</label>
+  </div>
+</div>
+</div>
+    <div class="grid-1">
+<label class="field">
+  <span>54. A lesão foi autoprovocada?</span>
+  <select id="lesaoAutoprovocada" name="lesaoAutoprovocada" data-sample="Não">
+    <option value=""></option><option value="Sim">Sim</option><option value="Não" selected>Não</option><option value="Ignorado">Ignorado</option>
+  </select>
+</label>
+</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Violência</div>
+    <div class="field field-block">
+  <span>55. Essa violência foi motivada por</span>
+  <div class="check-grid cols-3">
+    <label class="check-option">
+  <input type="checkbox" name="motivacaoViolencia" value="Sexismo" data-sample-checked="true">
+  <span>Sexismo</span>
+</label><label class="check-option">
+  <input type="checkbox" name="motivacaoViolencia" value="Homofobia / lesbofobia / bifobia / transfobia">
+  <span>Homofobia / lesbofobia / bifobia / transfobia</span>
+</label><label class="check-option">
+  <input type="checkbox" name="motivacaoViolencia" value="Racismo">
+  <span>Racismo</span>
+</label><label class="check-option">
+  <input type="checkbox" name="motivacaoViolencia" value="Intolerância religiosa">
+  <span>Intolerância religiosa</span>
+</label><label class="check-option">
+  <input type="checkbox" name="motivacaoViolencia" value="Xenofobia">
+  <span>Xenofobia</span>
+</label><label class="check-option">
+  <input type="checkbox" name="motivacaoViolencia" value="Conflito geracional">
+  <span>Conflito geracional</span>
+</label><label class="check-option">
+  <input type="checkbox" name="motivacaoViolencia" value="Situação de rua">
+  <span>Situação de rua</span>
+</label><label class="check-option">
+  <input type="checkbox" name="motivacaoViolencia" value="Deficiência">
+  <span>Deficiência</span>
+</label><label class="check-option">
+  <input type="checkbox" name="motivacaoViolencia" value="Outros">
+  <span>Outros</span>
+</label>
+  </div>
+</div>
+    <div class="field field-block">
+  <span>56. Tipo de violência</span>
+  <div class="check-grid cols-4">
+    <label class="check-option">
+  <input type="checkbox" name="tipoViolencia" value="Física">
+  <span>Física</span>
+</label><label class="check-option">
+  <input type="checkbox" name="tipoViolencia" value="Psicológica / moral" data-sample-checked="true">
+  <span>Psicológica / moral</span>
+</label><label class="check-option">
+  <input type="checkbox" name="tipoViolencia" value="Tortura">
+  <span>Tortura</span>
+</label><label class="check-option">
+  <input type="checkbox" name="tipoViolencia" value="Sexual">
+  <span>Sexual</span>
+</label><label class="check-option">
+  <input type="checkbox" name="tipoViolencia" value="Tráfico de seres humanos">
+  <span>Tráfico de seres humanos</span>
+</label><label class="check-option">
+  <input type="checkbox" name="tipoViolencia" value="Financeira / econômica">
+  <span>Financeira / econômica</span>
+</label><label class="check-option">
+  <input type="checkbox" name="tipoViolencia" value="Negligência / abandono">
+  <span>Negligência / abandono</span>
+</label><label class="check-option">
+  <input type="checkbox" name="tipoViolencia" value="Trabalho infantil">
+  <span>Trabalho infantil</span>
+</label><label class="check-option">
+  <input type="checkbox" name="tipoViolencia" value="Intervenção legal">
+  <span>Intervenção legal</span>
+</label><label class="check-option">
+  <input type="checkbox" name="tipoViolencia" value="Outros">
+  <span>Outros</span>
+</label>
+  </div>
+</div>
+    <div class="field field-block">
+  <span>57. Meio de agressão</span>
+  <div class="check-grid cols-3">
+    <label class="check-option">
+  <input type="checkbox" name="meioAgressao" value="Força corporal / espancamento">
+  <span>Força corporal / espancamento</span>
+</label><label class="check-option">
+  <input type="checkbox" name="meioAgressao" value="Enforcamento">
+  <span>Enforcamento</span>
+</label><label class="check-option">
+  <input type="checkbox" name="meioAgressao" value="Objeto contundente">
+  <span>Objeto contundente</span>
+</label><label class="check-option">
+  <input type="checkbox" name="meioAgressao" value="Objeto perfuro-cortante">
+  <span>Objeto perfuro-cortante</span>
+</label><label class="check-option">
+  <input type="checkbox" name="meioAgressao" value="Substância / objeto quente">
+  <span>Substância / objeto quente</span>
+</label><label class="check-option">
+  <input type="checkbox" name="meioAgressao" value="Envenenamento / intoxicação">
+  <span>Envenenamento / intoxicação</span>
+</label><label class="check-option">
+  <input type="checkbox" name="meioAgressao" value="Arma de fogo">
+  <span>Arma de fogo</span>
+</label><label class="check-option">
+  <input type="checkbox" name="meioAgressao" value="Ameaça" data-sample-checked="true">
+  <span>Ameaça</span>
+</label><label class="check-option">
+  <input type="checkbox" name="meioAgressao" value="Outro">
+  <span>Outro</span>
+</label>
+  </div>
+</div>
+    <div class="field field-block">
+  <span>58. Se ocorreu violência sexual, qual tipo?</span>
+  <div class="check-grid cols-3">
+    <label class="check-option">
+  <input type="checkbox" name="tipoViolenciaSexual" value="Assédio sexual">
+  <span>Assédio sexual</span>
+</label><label class="check-option">
+  <input type="checkbox" name="tipoViolenciaSexual" value="Estupro">
+  <span>Estupro</span>
+</label><label class="check-option">
+  <input type="checkbox" name="tipoViolenciaSexual" value="Pornografia infantil">
+  <span>Pornografia infantil</span>
+</label><label class="check-option">
+  <input type="checkbox" name="tipoViolenciaSexual" value="Exploração sexual">
+  <span>Exploração sexual</span>
+</label><label class="check-option">
+  <input type="checkbox" name="tipoViolenciaSexual" value="Outros">
+  <span>Outros</span>
+</label>
+  </div>
+</div>
+    <div class="field field-block">
+  <span>59. Procedimento realizado</span>
+  <div class="check-grid cols-3">
+    <label class="check-option">
+  <input type="checkbox" name="procedimentos" value="Profilaxia DST">
+  <span>Profilaxia DST</span>
+</label><label class="check-option">
+  <input type="checkbox" name="procedimentos" value="Profilaxia HIV">
+  <span>Profilaxia HIV</span>
+</label><label class="check-option">
+  <input type="checkbox" name="procedimentos" value="Profilaxia hepatite B">
+  <span>Profilaxia hepatite B</span>
+</label><label class="check-option">
+  <input type="checkbox" name="procedimentos" value="Coleta de sangue">
+  <span>Coleta de sangue</span>
+</label><label class="check-option">
+  <input type="checkbox" name="procedimentos" value="Coleta de sêmen">
+  <span>Coleta de sêmen</span>
+</label><label class="check-option">
+  <input type="checkbox" name="procedimentos" value="Coleta de secreção vaginal">
+  <span>Coleta de secreção vaginal</span>
+</label><label class="check-option">
+  <input type="checkbox" name="procedimentos" value="Contracepção de emergência">
+  <span>Contracepção de emergência</span>
+</label><label class="check-option">
+  <input type="checkbox" name="procedimentos" value="Aborto previsto em lei">
+  <span>Aborto previsto em lei</span>
+</label>
+  </div>
+</div>
+  </div>
+</section>
+
+        
+<section class="page">
+  <div class="section">
+    <div class="section-title">Dados do provável autor da agressão</div>
+    <div class="grid-4">
+<label class="field">
+  <span>60. Número de envolvidos</span>
+  <input type="text" id="numeroEnvolvidos" name="numeroEnvolvidos" data-sample="Um">
+</label>
+<label class="field">
+  <span>62. Sexo do provável autor</span>
+  <select id="sexoProvavelAutor" name="sexoProvavelAutor" data-sample="Masculino">
+    <option value=""></option><option value="Masculino" selected>Masculino</option><option value="Feminino">Feminino</option><option value="Ambos">Ambos</option><option value="Ignorado">Ignorado</option>
+  </select>
+</label>
+<label class="field">
+  <span>63. Suspeita de uso de álcool</span>
+  <select id="usoAlcool" name="usoAlcool" data-sample="Sim">
+    <option value=""></option><option value="Sim" selected>Sim</option><option value="Não">Não</option><option value="Ignorado">Ignorado</option>
+  </select>
+</label>
+<label class="field">
+  <span>64. Ciclo de vida do provável autor</span>
+  <select id="cicloVidaAutor" name="cicloVidaAutor" data-sample="Pessoa adulta">
+    <option value=""></option><option value="Pessoa adulta" selected>Pessoa adulta</option><option value="Criança">Criança</option><option value="Adolescente">Adolescente</option><option value="Pessoa idosa">Pessoa idosa</option><option value="Ignorado">Ignorado</option>
+  </select>
+</label>
+</div>
+    <div class="field field-block">
+  <span>61. Vínculo / grau de parentesco com a pessoa atendida</span>
+  <div class="check-grid cols-3">
+    <label class="check-option">
+  <input type="checkbox" name="vinculoAutor" value="Pai">
+  <span>Pai</span>
+</label><label class="check-option">
+  <input type="checkbox" name="vinculoAutor" value="Mãe">
+  <span>Mãe</span>
+</label><label class="check-option">
+  <input type="checkbox" name="vinculoAutor" value="Padrasto">
+  <span>Padrasto</span>
+</label><label class="check-option">
+  <input type="checkbox" name="vinculoAutor" value="Madrasta">
+  <span>Madrasta</span>
+</label><label class="check-option">
+  <input type="checkbox" name="vinculoAutor" value="Cônjuge" data-sample-checked="true">
+  <span>Cônjuge</span>
+</label><label class="check-option">
+  <input type="checkbox" name="vinculoAutor" value="Ex-cônjuge">
+  <span>Ex-cônjuge</span>
+</label><label class="check-option">
+  <input type="checkbox" name="vinculoAutor" value="Namorado(a)">
+  <span>Namorado(a)</span>
+</label><label class="check-option">
+  <input type="checkbox" name="vinculoAutor" value="Ex-namorado(a)">
+  <span>Ex-namorado(a)</span>
+</label><label class="check-option">
+  <input type="checkbox" name="vinculoAutor" value="Irmão(ã)">
+  <span>Irmão(ã)</span>
+</label><label class="check-option">
+  <input type="checkbox" name="vinculoAutor" value="Filho(a)">
+  <span>Filho(a)</span>
+</label><label class="check-option">
+  <input type="checkbox" name="vinculoAutor" value="Amigos / conhecidos">
+  <span>Amigos / conhecidos</span>
+</label><label class="check-option">
+  <input type="checkbox" name="vinculoAutor" value="Desconhecido(a)">
+  <span>Desconhecido(a)</span>
+</label><label class="check-option">
+  <input type="checkbox" name="vinculoAutor" value="Cuidador(a)">
+  <span>Cuidador(a)</span>
+</label><label class="check-option">
+  <input type="checkbox" name="vinculoAutor" value="Patrão / chefe">
+  <span>Patrão / chefe</span>
+</label><label class="check-option">
+  <input type="checkbox" name="vinculoAutor" value="Pessoa com relação institucional">
+  <span>Pessoa com relação institucional</span>
+</label><label class="check-option">
+  <input type="checkbox" name="vinculoAutor" value="Policial / agente da lei">
+  <span>Policial / agente da lei</span>
+</label><label class="check-option">
+  <input type="checkbox" name="vinculoAutor" value="Própria pessoa">
+  <span>Própria pessoa</span>
+</label><label class="check-option">
+  <input type="checkbox" name="vinculoAutor" value="Outros">
+  <span>Outros</span>
+</label>
+  </div>
+</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Encaminhamento</div>
+    <div class="field field-block">
+  <span>65. Encaminhamento</span>
+  <div class="check-grid cols-2">
+    <label class="check-option">
+  <input type="checkbox" name="encaminhamento" value="Rede de saúde (unidade básica, hospital, outras)" data-sample-checked="true">
+  <span>Rede de saúde (unidade básica, hospital, outras)</span>
+</label><label class="check-option">
+  <input type="checkbox" name="encaminhamento" value="Rede de assistência social (CRAS, CREAS, outras)">
+  <span>Rede de assistência social (CRAS, CREAS, outras)</span>
+</label><label class="check-option">
+  <input type="checkbox" name="encaminhamento" value="Rede de educação (creche, escola, outras)">
+  <span>Rede de educação (creche, escola, outras)</span>
+</label><label class="check-option">
+  <input type="checkbox" name="encaminhamento" value="Rede de atendimento à mulher">
+  <span>Rede de atendimento à mulher</span>
+</label><label class="check-option">
+  <input type="checkbox" name="encaminhamento" value="Conselho tutelar">
+  <span>Conselho tutelar</span>
+</label><label class="check-option">
+  <input type="checkbox" name="encaminhamento" value="Conselho do idoso">
+  <span>Conselho do idoso</span>
+</label><label class="check-option">
+  <input type="checkbox" name="encaminhamento" value="Delegacia de atendimento ao idoso">
+  <span>Delegacia de atendimento ao idoso</span>
+</label><label class="check-option">
+  <input type="checkbox" name="encaminhamento" value="Centro de referência dos direitos humanos">
+  <span>Centro de referência dos direitos humanos</span>
+</label><label class="check-option">
+  <input type="checkbox" name="encaminhamento" value="Ministério Público">
+  <span>Ministério Público</span>
+</label><label class="check-option">
+  <input type="checkbox" name="encaminhamento" value="Delegacia especializada de proteção à criança e adolescente">
+  <span>Delegacia especializada de proteção à criança e adolescente</span>
+</label><label class="check-option">
+  <input type="checkbox" name="encaminhamento" value="Delegacia de atendimento à mulher" data-sample-checked="true">
+  <span>Delegacia de atendimento à mulher</span>
+</label><label class="check-option">
+  <input type="checkbox" name="encaminhamento" value="Outras delegacias">
+  <span>Outras delegacias</span>
+</label><label class="check-option">
+  <input type="checkbox" name="encaminhamento" value="Justiça da infância e da juventude">
+  <span>Justiça da infância e da juventude</span>
+</label><label class="check-option">
+  <input type="checkbox" name="encaminhamento" value="Defensoria pública">
+  <span>Defensoria pública</span>
+</label>
+  </div>
+</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Dados finais</div>
+    <div class="grid-3">
+<label class="field">
+  <span>66. Violência relacionada ao trabalho</span>
+  <select id="violenciaTrabalho" name="violenciaTrabalho" data-sample="Não">
+    <option value=""></option><option value="Sim">Sim</option><option value="Não" selected>Não</option><option value="Ignorado">Ignorado</option>
+  </select>
+</label>
+<label class="field">
+  <span>67. Foi emitida a CAT?</span>
+  <select id="catEmitida" name="catEmitida" data-sample="Não se aplica">
+    <option value=""></option><option value="Não se aplica" selected>Não se aplica</option><option value="Sim">Sim</option><option value="Não">Não</option>
+  </select>
+</label>
+<label class="field">
+  <span>68. Circunstância da lesão (CID 10 - Cap. XX)</span>
+  <input type="text" id="circunstanciaLesao" name="circunstanciaLesao" data-sample="Y04">
+</label>
+</div>
+    <div class="grid-1">
+<label class="field">
+  <span>69. Data de encerramento</span>
+  <input type="date" id="dataEncerramento" name="dataEncerramento" data-sample="2026-03-18">
+</label>
+</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Informações complementares</div>
+    <div class="grid-3">
+<label class="field">
+  <span>Nome do acompanhante</span>
+  <input type="text" id="nomeAcompanhante" name="nomeAcompanhante" data-sample="Acompanhante Exemplo">
+</label>
+<label class="field">
+  <span>Vínculo / grau de parentesco</span>
+  <input type="text" id="parentescoAcompanhante" name="parentescoAcompanhante" data-sample="Irmã">
+</label>
+<label class="field">
+  <span>Telefone</span>
+  <input type="text" id="telefoneAcompanhante" name="telefoneAcompanhante" data-sample="(31) 98888-8888">
+</label>
+</div>
+    <label class="field">
+  <span>Observações adicionais</span>
+  <textarea id="observacoesAdicionais" name="observacoesAdicionais" data-sample="Este é apenas um exemplo para demonstrar o preenchimento automático do formulário web."></textarea>
+</label>
+  </div>
+</section>
+
+        
+<section class="page">
+  <div class="hotline-grid">
+    <div class="hotline-box">
+      <span>Disque Saúde</span>
+      <strong>0800 61 1997</strong>
+    </div>
+    <div class="hotline-box">
+      <span>Centro de atendimento à mulher</span>
+      <strong>180</strong>
+    </div>
+    <div class="hotline-box">
+      <span>Disque-denúncia combate ao abuso e exploração sexual</span>
+      <strong>100</strong>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Notificador</div>
+    <div class="grid-2">
+<label class="field">
+  <span>Município / unidade de saúde</span>
+  <input type="text" id="municipioUnidadeSaude" name="municipioUnidadeSaude" data-sample="Belo Horizonte / UBS Central">
+</label>
+<label class="field">
+  <span>Código da unidade de saúde / CNES</span>
+  <input type="text" id="codigoUnidadeSaudeNotificador" name="codigoUnidadeSaudeNotificador" data-sample="9876543">
+</label>
+</div>
+    <div class="grid-3">
+<label class="field">
+  <span>Nome</span>
+  <input type="text" id="nomeNotificador" name="nomeNotificador" data-sample="Profissional Exemplo">
+</label>
+<label class="field">
+  <span>Função</span>
+  <input type="text" id="funcaoNotificador" name="funcaoNotificador" data-sample="Enfermeira">
+</label>
+<label class="field">
+  <span>Assinatura</span>
+  <input type="text" id="assinaturaNotificador" name="assinaturaNotificador" data-sample="Assinatura digital">
+</label>
+</div>
+  </div>
+</section>
+
+      </div>
+    </form>
+  </main>
 </body>
 </html>
