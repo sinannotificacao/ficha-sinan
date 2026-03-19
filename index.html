@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema de Fichas</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #e6f0f0, #f7f7f7);
+      padding: 24px;
+    }
+    .home-card {
+      width: 100%;
+      max-width: 760px;
+      background: #fff;
+      border-radius: 18px;
+      padding: 40px 28px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.10);
+      text-align: center;
+    }
+    .home-logo {
+      max-width: 120px;
+      height: auto;
+      margin-bottom: 20px;
+    }
+    h1 {
+      margin: 0 0 10px;
+      color: #1f2937;
+      font-size: 32px;
+    }
+    p {
+      margin: 0 0 30px;
+      color: #6b7280;
+      font-size: 16px;
+    }
+    .menu-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .menu-btn {
+      display: block;
+      width: 100%;
+      text-decoration: none;
+      background: #0f766e;
+      color: #fff;
+      padding: 18px 20px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .menu-btn:hover {
+      background: #115e59;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <main class="home-card">
+    <img src="img/logo-prefeitura.png" alt="Logo da Prefeitura" class="home-logo" />
+    <h1>Sistema de Fichas</h1>
+    <p>Selecione a ficha que deseja acessar</p>
+
+    <div class="menu-buttons">
+      <a href="ficha-investigacao.html" class="menu-btn">Fichas Específicas (Investigação)</a>
+      <a href="ficha-surto.html" class="menu-btn">Ficha de Notificação de Surto</a>
+      <a href="ficha-violencia.html" class="menu-btn">Ficha de Notificação de Violência Interpessoal/Autoinfligida</a>
+    </div>
+  </main>
+</body>
+</html>
