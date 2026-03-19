@@ -7,8 +7,17 @@
   <link rel="stylesheet" href="styles.css" />
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script defer src="app.js"></script>
+  <style>
+    .menu-back { padding: 16px 20px 0; }
+    .back-btn { display: inline-block; text-decoration: none; background: #374151; color: #fff; padding: 10px 16px; border-radius: 8px; font-weight: 600; }
+    .back-btn:hover { background: #1f2937; }
+    @media print { .menu-back { display: none !important; } }
+  </style>
 </head>
 <body>
+  <div class="menu-back no-print">
+    <a href="index.html" class="back-btn">← Voltar ao menu</a>
+  </div>
   <header class="topbar no-print">
     <div>
       <h1>Ficha SINAN editável</h1>
@@ -25,9 +34,7 @@
     <div id="document" class="document">
       <section class="page">
         <div class="form-header">
-          <div class="logo-box">
-            <img src="img/logo-prefeitura.png" alt="Logo da Prefeitura" style="max-height: 40mm; width: auto;">
-          </div>
+          <div class="logo-box"><img src="img/logo-prefeitura.png" alt="Logo da Prefeitura" style="max-width: 110px; height: auto; display: block; margin: 0 auto;" /></div>
           <div class="header-main">
             <div class="title">FICHA DE NOTIFICAÇÃO INDIVIDUAL</div>
             <div class="subtitle">VIOLÊNCIA INTERPESSOAL / AUTOPROVOCADA</div>
