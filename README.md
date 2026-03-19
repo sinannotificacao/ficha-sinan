@@ -1,19 +1,29 @@
+# Ficha SINAN editável
 
-# Ficha SINAN - violência interpessoal / autoprovocada
-
-Projeto web para preencher a ficha online e exportar em PDF.
+Projeto estático em HTML, CSS e JavaScript para hospedar no GitHub Pages.
 
 ## Arquivos
-- `index.html`
-- `styles.css`
-- `app.js`
-- `img/logo-prefeitura.png` (opcional)
 
-## Como usar
-1. Suba os arquivos no GitHub Pages.
-2. Se quiser usar uma logo fixa, crie a pasta `img` e coloque o arquivo `logo-prefeitura.png`.
-3. Se não quiser depender da pasta `img`, use o botão **Trocar logo** no topo do site.
-4. Preencha os campos e clique em **Exportar PDF**.
+- `index.html` -> estrutura da ficha
+- `styles.css` -> visual da página e impressão A4
+- `app.js` -> preencher exemplo, limpar e exportar PDF
+
+## Como publicar no GitHub Pages
+
+1. Crie um repositório novo no GitHub.
+2. Envie estes arquivos para a raiz do repositório.
+3. Abra `Settings` -> `Pages`.
+4. Em `Build and deployment`, escolha `Deploy from a branch`.
+5. Selecione a branch `main` e a pasta `/(root)`.
+6. Salve.
+7. Aguarde a URL pública ser criada.
+
+## Como editar
+
+- Textos e campos: `index.html`
+- Cores, bordas e espaçamento: `styles.css`
+- Botões e PDF: `app.js`
 
 ## Observação
-Os campos foram organizados com base na ficha PDF enviada pelo usuário.
+
+Se quiser deixar ainda mais parecido com o PDF original, ajuste alturas, larguras, títulos e ordem dos blocos no `index.html` e no `styles.css`.
