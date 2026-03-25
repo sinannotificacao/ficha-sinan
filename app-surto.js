@@ -14,6 +14,77 @@
   const clearBtn = document.getElementById('clearBtn');
   const fillSampleBtn = document.getElementById('fillSampleBtn');
 
+  let debugGrid = false;
+  const toggleGridBtn = document.getElementById('toggleGridBtn');
+
+  function drawDebugGrid(page, font, pageLabel) {
+    const { rgb } = PDFLib;
+    const width = page.getWidth();
+    const height = page.getHeight();
+    const step = 36; // about 0.5 inch
+    const majorStep = 72; // about 1 inch
+
+    for (let x = 0; x <= width; x += step) {
+      const isMajor = x % majorStep === 0;
+      page.drawLine({
+        start: { x, y: 0 },
+        end: { x, y: height },
+        thickness: isMajor ? 0.8 : 0.35,
+        color: isMajor ? rgb(1, 0, 0) : rgb(1, 0.65, 0.65),
+        opacity: isMajor ? 0.45 : 0.22,
+      });
+      if (x < width - 18) {
+        page.drawText(String(Math.round(x)), {
+          x: x + 2,
+          y: height - 10,
+          size: 6,
+          font,
+          color: rgb(0.75, 0, 0),
+          opacity: 0.85,
+        });
+      }
+    }
+
+    for (let y = 0; y <= height; y += step) {
+      const isMajor = y % majorStep === 0;
+      page.drawLine({
+        start: { x: 0, y },
+        end: { x: width, y },
+        thickness: isMajor ? 0.8 : 0.35,
+        color: isMajor ? rgb(0, 0, 1) : rgb(0.6, 0.75, 1),
+        opacity: isMajor ? 0.45 : 0.22,
+      });
+      if (y < height - 12) {
+        page.drawText(String(Math.round(y)), {
+          x: 2,
+          y: y + 2,
+          size: 6,
+          font,
+          color: rgb(0, 0, 0.75),
+          opacity: 0.85,
+        });
+      }
+    }
+
+    page.drawRectangle({
+      x: 0,
+      y: height - 22,
+      width: 195,
+      height: 22,
+      color: rgb(1, 1, 0.85),
+      opacity: 0.75,
+    });
+    page.drawText(`GRADE DEBUG ATIVA - ${pageLabel}`, {
+      x: 6,
+      y: height - 15,
+      size: 9,
+      font,
+      color: rgb(0.5, 0.2, 0),
+      opacity: 1,
+    });
+  }
+
+
   function getField(name) {
     return form.elements[name];
   }
@@ -109,6 +180,10 @@
       const pages = pdfDoc.getPages();
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      if (debugGrid) {
+        drawDebugGrid(pages[0], font, 'PAGINA 1');
+        drawDebugGrid(pages[1], font, 'PAGINA 2');
+      }
 
       const p1 = createHelpers(pages[0], font, bold);
       const p2 = createHelpers(pages[1], font, bold);
@@ -265,7 +340,7 @@
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
-      const filename = `ficha-surto-oficial-${new Date().toISOString().slice(0, 10)}.pdf`;
+      const filename = `${debugGrid ? 'ficha-surto-debug' : 'ficha-surto-oficial'}-${new Date().toISOString().slice(0, 10)}.pdf`;
 
       const a = document.createElement('a');
       a.href = url;
@@ -338,6 +413,12 @@
     setValue('distrito_infeccao', 'Sede');
     setValue('bairro_infeccao', 'Centro');
   }
+
+  toggleGridBtn?.addEventListener('click', () => {
+    debugGrid = !debugGrid;
+    toggleGridBtn.textContent = `Grade debug: ${debugGrid ? 'ligada' : 'desligada'}`;
+    toggleGridBtn.classList.toggle('active', debugGrid);
+  });
 
   exportBtn?.addEventListener('click', exportOfficialPdf);
   clearBtn?.addEventListener('click', clearForm);
