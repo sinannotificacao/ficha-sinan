@@ -241,20 +241,20 @@
       if (esc) p1.text(140, 554, esc, 10, 30);
 
       p1.boxCode(122, 640, onlyDigits(val('cartao_sus')), 31, 10, 15);
-      p1.text(500, 640, val('nome_mae'), 9, 360);
+      p1.text(500, 640, val('nome_mae'), 9, 300);
 
-      p1.boxCode(112, 680, formatDateBR(val('data_primeiros_sintomas_caso_suspeito')), 31, 10, 8);
-      p1.boxCode(113, 730, onlyDigits(val('numero_casos_suspeitos')), 31, 10, 6);
+      p1.boxCode(112, 670, formatDateBR(val('data_primeiros_sintomas_caso_suspeito')), 31, 10, 8);
+      p1.boxCode(113, 720, onlyDigits(val('numero_casos_suspeitos')), 31, 10, 6);
 
       const local = optionCode(val('local_inicial_surto'));
       const localMarks = {
-        '1': [400, 698], '2': [618, 698], '3': [920, 698],
-        '4': [400, 726], '5': [617, 726], '6': [920, 726],
-        '7': [400, 754], '8': [617, 754], '9': [920, 754],
-        '10': [617, 780], '11': [920, 780],
+        '1': [400, 688], '2': [618, 688], '3': [920, 688],
+        '4': [400, 716], '5': [617, 716], '6': [920, 716],
+        '7': [400, 744], '8': [617, 744], '9': [920, 744],
+        '10': [617, 770], '11': [920, 770],
       };
       if (localMarks[local]) p1.check(localMarks[local][0], localMarks[local][1], 10);
-      p1.text(952, 780, val('local_inicial_surto_outros'), 8, 140);
+      p1.text(952, 770, val('local_inicial_surto_outros'), 8, 140);
 
       p1.boxCode(112, 835, val('uf_residencia').toUpperCase(), 31, 10, 2);
       p1.text(190, 835, val('municipio_residencia'), 10, 430);
@@ -262,7 +262,7 @@
       p1.text(901, 835, val('distrito_residencia'), 10, 220);
 
       p1.text(110, 895, val('bairro_residencia'), 10, 200);
-      p1.text(396, 895, val('logradouro_residencia'), 9, 360);
+      p1.text(396, 895, val('logradouro_residencia'), 9, 320);
       p1.boxCode(1038, 895, onlyDigits(val('codigo_logradouro')), 31, 10, 5);
 
       p1.text(112, 945, val('numero_residencia'), 10, 90);
@@ -280,10 +280,10 @@
       if (zonaMarks[zona]) p1.check(zonaMarks[zona][0], zonaMarks[zona][1], 10);
       p1.text(752, 1045, val('pais_residente_fora'), 10, 350);
 
-      p1.text(122, 1120, val('notificante_municipio_unidade'), 9, 500);
-      p1.text(120, 1160, val('notificante_nome'), 9, 240);
-      p1.text(534, 1160, val('notificante_funcao'), 9, 220);
-      p1.text(995, 1160, val('notificante_assinatura'), 9, 120);
+      p1.text(122, 1100, val('notificante_municipio_unidade'), 9, 420);
+      p1.text(120, 1140, val('notificante_nome'), 9, 240);
+      p1.text(534, 1140, val('notificante_funcao'), 9, 220);
+      p1.text(995, 1140, val('notificante_assinatura'), 9, 120);
 
       // PÁGINA 2
       p2.boxCode(145, 208, formatDateBR(val('data_coleta_sorologia')), 31, 10, 8);
