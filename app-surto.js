@@ -241,20 +241,20 @@
       if (esc) p1.text(140, 554, esc, 10, 30);
 
       p1.boxCode(122, 640, onlyDigits(val('cartao_sus')), 31, 10, 15);
-      p1.text(500, 640, val('nome_mae'), 9, 260);
+      p1.text(500, 640, val('nome_mae'), 9, 240);
 
-      p1.boxCode(112, 665, formatDateBR(val('data_primeiros_sintomas_caso_suspeito')), 31, 10, 8);
-      p1.boxCode(113, 715, onlyDigits(val('numero_casos_suspeitos')), 31, 10, 6);
+      p1.boxCode(112, 662, formatDateBR(val('data_primeiros_sintomas_caso_suspeito')), 31, 10, 8);
+      p1.boxCode(113, 712, onlyDigits(val('numero_casos_suspeitos')), 31, 10, 6);
 
       const local = optionCode(val('local_inicial_surto'));
       const localMarks = {
-        '1': [400, 683], '2': [618, 683], '3': [920, 683],
-        '4': [400, 711], '5': [617, 711], '6': [920, 711],
-        '7': [400, 739], '8': [617, 739], '9': [920, 739],
-        '10': [617, 765], '11': [920, 765],
+        '1': [400, 680], '2': [618, 680], '3': [920, 680],
+        '4': [400, 708], '5': [617, 708], '6': [920, 708],
+        '7': [400, 736], '8': [617, 736], '9': [920, 736],
+        '10': [617, 762], '11': [920, 762],
       };
       if (localMarks[local]) p1.check(localMarks[local][0], localMarks[local][1], 10);
-      p1.text(952, 765, val('local_inicial_surto_outros'), 8, 140);
+      p1.text(952, 762, val('local_inicial_surto_outros'), 8, 140);
 
       p1.boxCode(112, 835, val('uf_residencia').toUpperCase(), 31, 10, 2);
       p1.text(190, 835, val('municipio_residencia'), 10, 430);
@@ -283,7 +283,7 @@
       p1.text(122, 1090, val('notificante_municipio_unidade'), 9, 420);
       p1.text(120, 1130, val('notificante_nome'), 9, 240);
       p1.text(534, 1130, val('notificante_funcao'), 9, 220);
-      p1.text(995, 1130, val('notificante_assinatura'), 9, 120);
+      p1.text(995, 1125, val('notificante_assinatura'), 9, 120);
 
       // PÁGINA 2
       p2.boxCode(145, 208, formatDateBR(val('data_coleta_sorologia')), 31, 10, 8);
