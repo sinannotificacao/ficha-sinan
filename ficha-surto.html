@@ -3,16 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ficha de Notificação Individual</title>
+  <title>Ficha de Notificação de Surto</title>
   <link rel="stylesheet" href="styles-surto.css" />
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script defer src="app-surto.js"></script>
+
+  <style>
+    .menu-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      background: #0d6efd;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: 12px;
+      transition: background 0.2s ease;
+    }
+
+    .menu-back:hover {
+      background: #0b5ed7;
+    }
+
+    .topbar-content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  </style>
 </head>
+
 <body>
   <header class="topbar no-print">
-    <div>
-      <h1>Ficha de Notificação Individual</h1>
-      <p>Modelo web com os mesmos campos e opções do formulário do SINAN.</p>
+    <div class="topbar-content">
+      <a href="index.html" class="menu-back">← Voltar ao menu</a>
+      <h1>Ficha de Notificação de Surto</h1>
+      <p>Modelo web com os mesmos campos e opções do formulário do SINAN para notificações de surto.</p>
     </div>
     <div class="topbar-actions">
       <button id="fillSampleBtn" type="button">Preencher exemplo</button>
