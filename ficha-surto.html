@@ -5,47 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ficha de Notificação de Surto</title>
   <link rel="stylesheet" href="styles-surto.css" />
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
   <script defer src="app-surto.js"></script>
-
-  <style>
-    .menu-back {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 16px;
-      border-radius: 8px;
-      background: #0d6efd;
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-      margin-bottom: 12px;
-      transition: background 0.2s ease;
-    }
-
-    .menu-back:hover {
-      background: #0b5ed7;
-    }
-
-    .topbar-content {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  </style>
 </head>
-
 <body>
   <header class="topbar no-print">
     <div class="topbar-content">
       <a href="index.html" class="menu-back">← Voltar ao menu</a>
       <h1>Ficha de Notificação de Surto</h1>
-      <p>Modelo web com os mesmos campos e opções do formulário do SINAN para notificações de surto.</p>
+      <p>Preencha os campos e exporte no modelo oficial do SINAN.</p>
     </div>
     <div class="topbar-actions">
       <button id="fillSampleBtn" type="button">Preencher exemplo</button>
       <button id="clearBtn" type="button" class="secondary">Limpar</button>
-      <button id="exportBtn" type="button" class="primary">Exportar PDF</button>
+      <button id="exportBtn" type="button" class="primary">Exportar PDF oficial</button>
     </div>
   </header>
 
@@ -64,7 +37,7 @@
             <div class="sheet-title-wrap">
               <div class="sheet-sinan">SINAN</div>
               <div class="sheet-system">SISTEMA DE INFORMAÇÃO DE AGRAVOS DE NOTIFICAÇÃO</div>
-              <div class="sheet-title">FICHA DE NOTIFICAÇÃO</div>
+              <div class="sheet-title">FICHA DE NOTIFICAÇÃO DE SURTO</div>
             </div>
             <div class="sheet-number field compact-field">
               <label><span class="field-num">Nº</span> Número</label>
@@ -348,7 +321,7 @@
             <div class="page-footer footer-line">
               <span>Notificação</span>
               <span>Sinan NET</span>
-              <span>SVS&nbsp;&nbsp;&nbsp;17/07/2006</span>
+              <span>SVS   17/07/2006</span>
             </div>
           </section>
         </section>
@@ -525,7 +498,7 @@
             </div>
             <div class="page-footer footer-line">
               <span>Dados Complementares/ Notificação</span>
-              <span>SVS&nbsp;&nbsp;&nbsp;17/07/2006</span>
+              <span>SVS   17/07/2006</span>
             </div>
           </section>
         </section>
