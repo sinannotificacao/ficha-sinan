@@ -1,6 +1,5 @@
-
 (() => {
-  const BASE_PDF_URL = 'Notificacao_Individual_v5.pdf';
+  const BASE_PDF_URL = 'Investigacao_surto_v5.pdf';
   const PDF_W = 595;
   const PDF_H = 841;
   const IMG_W = 1240;
@@ -24,8 +23,8 @@
     const { rgb } = PDFLib;
     const width = page.getWidth();
     const height = page.getHeight();
-    const step = 36; // about 0.5 inch
-    const majorStep = 72; // about 1 inch
+    const step = 36;
+    const majorStep = 72;
 
     for (let x = 0; x <= width; x += step) {
       const isMajor = x % majorStep === 0;
@@ -86,7 +85,6 @@
       opacity: 1,
     });
   }
-
 
   function getField(name) {
     return form.elements[name];
@@ -183,6 +181,7 @@
       const pages = pdfDoc.getPages();
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
       if (debugGrid) {
         drawDebugGrid(pages[0], font, 'PAGINA 1');
         drawDebugGrid(pages[1], font, 'PAGINA 2');
@@ -193,7 +192,7 @@
 
       const val = getValue;
 
-      // PÁGINA 1
+      // PAGINA 1
       p1.text(946, 101, val('numero_notificacao'), 10, 220);
 
       const tipo = optionCode(val('tipo_notificacao'));
@@ -285,7 +284,7 @@
       p1.text(534, 1130, val('notificante_funcao'), 9, 220);
       p1.text(995, 1125, val('notificante_assinatura'), 9, 120);
 
-      // PÁGINA 2
+      // PAGINA 2
       p2.boxCode(145, 208, formatDateBR(val('data_coleta_sorologia')), 31, 10, 8);
       p2.boxCode(397, 208, formatDateBR(val('data_coleta_outra_amostra')), 31, 10, 8);
       p2.text(641, 208, val('tipo_exame'), 10, 560);
@@ -343,7 +342,7 @@
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
-      const filename = `${debugGrid ? 'ficha-surto-debug' : 'ficha-surto-oficial'}-${new Date().toISOString().slice(0, 10)}.pdf`;
+      const filename = `${debugGrid ? 'ficha-investigacao-surto-debug' : 'ficha-investigacao-surto-oficial'}-${new Date().toISOString().slice(0, 10)}.pdf`;
 
       const a = document.createElement('a');
       a.href = url;
@@ -352,7 +351,7 @@
       setTimeout(() => URL.revokeObjectURL(url), 2000);
     } catch (error) {
       console.error(error);
-      alert('Não foi possível gerar o PDF oficial. Verifique se o arquivo base Notificacao_Individual_v5.pdf está na mesma pasta do HTML.');
+      alert('Não foi possível gerar o PDF oficial. Verifique se o arquivo base Investigacao_surto_v5.pdf está na mesma pasta do HTML.');
     } finally {
       exportBtn.disabled = false;
       exportBtn.textContent = 'Exportar PDF oficial';
