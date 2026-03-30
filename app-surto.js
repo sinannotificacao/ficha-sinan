@@ -50,16 +50,13 @@
 
   function drawField(page, font, label, value, x, y, w, h, opts = {}) {
     page.drawRectangle({ x, y: y - h, width: w, height: h, borderWidth: 0.8, borderColor: rgb(.1,.1,.1) });
-    const labelLines = String(label || '').split('\n');
-    labelLines.forEach((line, i) => {
-      page.drawText(line, { x: x + 4, y: y - 12 - (i * 8), size: 7.2, font });
-    });
+    page.drawText(label, { x: x + 4, y: y - 12, size: 7.2, font });
     const text = opts.date ? formatDateBR(value) : (opts.digits ? onlyDigits(value) : value);
     if (opts.multiline) {
       const lines = splitLines(text, opts.maxChars || 70).slice(0, opts.maxLines || 3);
       lines.forEach((line, i) => page.drawText(line, { x: x + 4, y: y - 24 - i * 11, size: 9.3, font }));
     } else {
-      page.drawText(fitText(text, opts.maxChars || Math.floor(w / 5.7)), { x: x + 4, y: y - h + 4, size: 9.4, font });
+      page.drawText(fitText(text, opts.maxChars || Math.floor(w / 5.7)), { x: x + 4, y: y - h + 8, size: 9.4, font });
     }
   }
 
@@ -113,10 +110,10 @@
       // Notificação de Surto
       const sec2H = 96;
       drawVertical(page, bold, 'Notificação de Surto', y, sec2H);
-      drawField(page, font, '7 Data dos 1os Sintomas do 1º Caso Suspeito', val('data_primeiros_sintomas'), CONTENT_X, y, 170, 40, { date: true });
-      drawField(page, font, '8 Nº de Casos Suspeitos / Expostos\naté a Data da Notificação', val('numero_casos_suspeitos'), CONTENT_X + 170, y, 160, 40, { digits: true, maxChars: 6 });
-      drawField(page, font, '9 Local Inicial de Ocorrência do Surto', val('local_inicial_surto'), CONTENT_X, y - 40, CONTENT_W, 28, { maxChars: 80 });
-      drawField(page, font, 'Especificar (quando for Outros)', val('local_inicial_surto_outros'), CONTENT_X, y - 68, CONTENT_W, 28, { maxChars: 80 });
+      drawField(page, font, '7 Data dos 1os Sintomas do 1º Caso Suspeito', val('data_primeiros_sintomas'), CONTENT_X, y, 170, 32, { date: true });
+      drawField(page, font, '8 Nº de Casos Suspeitos / Expostos até a Data da Notificação', val('numero_casos_suspeitos'), CONTENT_X + 170, y, 160, 32, { digits: true });
+      drawField(page, font, '9 Local Inicial de Ocorrência do Surto', val('local_inicial_surto'), CONTENT_X, y - 32, CONTENT_W, 32, { maxChars: 80 });
+      drawField(page, font, 'Especificar (quando for Outros)', val('local_inicial_surto_outros'), CONTENT_X, y - 64, CONTENT_W, 32, { maxChars: 80 });
       y -= sec2H + 6;
 
       // Dados de Ocorrência
