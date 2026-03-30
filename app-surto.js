@@ -61,30 +61,8 @@
   }
 
   function drawVertical(page, font, text, y, h) {
-    const boxX = M;
-    const boxY = y - h;
-    const fontSize = 8.5;
-
-    page.drawRectangle({
-      x: boxX,
-      y: boxY,
-      width: SIDE,
-      height: h,
-      borderWidth: 0.9,
-      borderColor: rgb(.1,.1,.1)
-    });
-
-    const textWidth = font.widthOfTextAtSize(text, fontSize);
-    const centerX = boxX + (SIDE / 2);
-    const centerY = boxY + (h / 2);
-
-    page.drawText(text, {
-      x: centerX - (fontSize / 2),
-      y: centerY - (textWidth / 2),
-      size: fontSize,
-      font,
-      rotate: degrees(90)
-    });
+    page.drawRectangle({ x: M, y: y - h, width: SIDE, height: h, borderWidth: 0.9, borderColor: rgb(.1,.1,.1) });
+    page.drawText(text, { x: M + 8, y: y - h + 12, size: 9, font, rotate: degrees(90) });
   }
 
   async function exportPDF() {
@@ -132,10 +110,10 @@
       // Notificação de Surto
       const sec2H = 96;
       drawVertical(page, bold, 'Notificação de Surto', y, sec2H);
-      drawField(page, font, '7 Data dos 1os Sintomas do 1º Caso Suspeito', val('data_primeiros_sintomas'), CONTENT_X, y, 170, 32, { date: true });
-      drawField(page, font, '8 Nº de Casos Suspeitos / Expostos até a Data da Notificação', val('numero_casos_suspeitos'), CONTENT_X + 170, y, 160, 32, { digits: true });
-      drawField(page, font, '9 Local Inicial de Ocorrência do Surto', val('local_inicial_surto'), CONTENT_X, y - 32, CONTENT_W, 32, { maxChars: 80 });
-      drawField(page, font, 'Especificar (quando for Outros)', val('local_inicial_surto_outros'), CONTENT_X, y - 64, CONTENT_W, 32, { maxChars: 80 });
+      drawField(page, font, '7 Data dos 1os Sintomas do 1º Caso Suspeito', val('data_primeiros_sintomas'), CONTENT_X, y, 190, 32, { date: true });
+      drawField(page, font, '8 Nº de Casos Suspeitos / Expostos', val('numero_casos_suspeitos'), CONTENT_X + 190, y, 120, 32, { digits: true, maxChars: 6 });
+      drawField(page, font, '9 Local Inicial de Ocorrência do Surto', val('local_inicial_surto'), CONTENT_X, y - 32, CONTENT_W, 36, { maxChars: 72 });
+      drawField(page, font, 'Especificar (quando for Outros)', val('local_inicial_surto_outros'), CONTENT_X, y - 68, CONTENT_W, 28, { maxChars: 80 });
       y -= sec2H + 6;
 
       // Dados de Ocorrência
