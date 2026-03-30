@@ -2,19 +2,49 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Ficha Surto</title>
+<title>Ficha de Investigação de Surto</title>
 <link rel="stylesheet" href="styles-surto.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script defer src="app-surto.js"></script>
 </head>
 <body>
-<h2>Ficha de Investigação de Surto</h2>
+
+<header class="topbar">
+  <h1>Ficha de Investigação de Surto</h1>
+  <button onclick="exportPDF()">Exportar PDF</button>
+</header>
+
+<main>
 <form id="form">
-<input name="agravo" placeholder="Agravo/Doença"><br>
-<input name="municipio" placeholder="Município"><br>
-<input name="casos" placeholder="Casos"><br>
-<textarea name="obs" placeholder="Observações"></textarea>
+
+<h3>Dados Gerais</h3>
+<input name="agravo" placeholder="Agravo/Doença">
+<input name="data" type="date">
+<input name="municipio" placeholder="Município">
+
+<h3>Notificação de Surto</h3>
+<input name="casos" placeholder="Nº de casos">
+<input name="local" placeholder="Local inicial">
+
+<h3>Dados de Ocorrência</h3>
+<input name="bairro" placeholder="Bairro">
+<input name="logradouro" placeholder="Logradouro">
+
+<h3>Situação Inicial</h3>
+<select name="transmissao">
+<option>Direta</option>
+<option>Indireta</option>
+</select>
+
+<h3>Observações</h3>
+<textarea name="obs"></textarea>
+
+<h3>Investigador</h3>
+<input name="nome" placeholder="Nome">
+<input name="funcao" placeholder="Função">
+
 </form>
-<button onclick="exportPDF()">Exportar PDF</button>
+</main>
+
 </body>
 </html>

@@ -1,1 +1,4 @@
-body{font-family:Arial;padding:20px;background:#f5f5f5}
+body{font-family:Arial;background:#f4f4f4;margin:0}
+.topbar{background:#111;color:#fff;padding:15px}
+main{padding:20px}
+input,textarea,select{display:block;width:100%;margin-bottom:10px;padding:8px}
