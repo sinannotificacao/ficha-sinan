@@ -50,13 +50,16 @@
 
   function drawField(page, font, label, value, x, y, w, h, opts = {}) {
     page.drawRectangle({ x, y: y - h, width: w, height: h, borderWidth: 0.8, borderColor: rgb(.1,.1,.1) });
-    page.drawText(label, { x: x + 4, y: y - 12, size: 7.2, font });
+    const labelLines = String(label || '').split('\n');
+    labelLines.forEach((line, i) => {
+      page.drawText(line, { x: x + 4, y: y - 12 - (i * 8), size: 7.2, font });
+    });
     const text = opts.date ? formatDateBR(value) : (opts.digits ? onlyDigits(value) : value);
     if (opts.multiline) {
       const lines = splitLines(text, opts.maxChars || 70).slice(0, opts.maxLines || 3);
       lines.forEach((line, i) => page.drawText(line, { x: x + 4, y: y - 24 - i * 11, size: 9.3, font }));
     } else {
-      page.drawText(fitText(text, opts.maxChars || Math.floor(w / 5.7)), { x: x + 4, y: y - h + 8, size: 9.4, font });
+      page.drawText(fitText(text, opts.maxChars || Math.floor(w / 5.7)), { x: x + 4, y: y - h + 4, size: 9.4, font });
     }
   }
 
