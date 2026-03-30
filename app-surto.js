@@ -61,8 +61,30 @@
   }
 
   function drawVertical(page, font, text, y, h) {
-    page.drawRectangle({ x: M, y: y - h, width: SIDE, height: h, borderWidth: 0.9, borderColor: rgb(.1,.1,.1) });
-    page.drawText(text, { x: M + 8, y: y - h + 12, size: 9, font, rotate: degrees(90) });
+    const boxX = M;
+    const boxY = y - h;
+    const fontSize = 8.5;
+
+    page.drawRectangle({
+      x: boxX,
+      y: boxY,
+      width: SIDE,
+      height: h,
+      borderWidth: 0.9,
+      borderColor: rgb(.1,.1,.1)
+    });
+
+    const textWidth = font.widthOfTextAtSize(text, fontSize);
+    const centerX = boxX + (SIDE / 2);
+    const centerY = boxY + (h / 2);
+
+    page.drawText(text, {
+      x: centerX - (fontSize / 2),
+      y: centerY - (textWidth / 2),
+      size: fontSize,
+      font,
+      rotate: degrees(90)
+    });
   }
 
   async function exportPDF() {
