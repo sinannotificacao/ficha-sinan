@@ -2,17 +2,17 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Ficha Surto V2</title>
+<title>Ficha Surto</title>
 <link rel="stylesheet" href="styles-surto.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script defer src="app-surto.js"></script>
 </head>
 <body>
-<h1>Ficha de Surto</h1>
+<h2>Ficha de Investigação de Surto</h2>
 <form id="form">
-<input name="agravo" placeholder="Agravo">
-<input name="municipio" placeholder="Município">
-<input name="casos" placeholder="Casos">
+<input name="agravo" placeholder="Agravo/Doença"><br>
+<input name="municipio" placeholder="Município"><br>
+<input name="casos" placeholder="Casos"><br>
 <textarea name="obs" placeholder="Observações"></textarea>
 </form>
 <button onclick="exportPDF()">Exportar PDF</button>
