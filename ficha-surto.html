@@ -2,49 +2,24 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Ficha de Investigação de Surto</title>
-<link rel="stylesheet" href="styles-surto.css">
+<title>Ficha SINAN Surto</title>
+<link rel="stylesheet" href="styles.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-<script defer src="app-surto.js"></script>
+<script defer src="app.js"></script>
 </head>
 <body>
 
-<header class="topbar">
-  <h1>Ficha de Investigação de Surto</h1>
-  <button onclick="exportPDF()">Exportar PDF</button>
+<header>
+<h2>Ficha SINAN - Investigação de Surto</h2>
+<button onclick="exportPDF()">Exportar PDF</button>
 </header>
 
-<main>
-<form id="form">
-
-<h3>Dados Gerais</h3>
-<input name="agravo" placeholder="Agravo/Doença">
-<input name="data" type="date">
+<form id="f">
+<input name="agravo" placeholder="Agravo">
 <input name="municipio" placeholder="Município">
-
-<h3>Notificação de Surto</h3>
-<input name="casos" placeholder="Nº de casos">
-<input name="local" placeholder="Local inicial">
-
-<h3>Dados de Ocorrência</h3>
-<input name="bairro" placeholder="Bairro">
-<input name="logradouro" placeholder="Logradouro">
-
-<h3>Situação Inicial</h3>
-<select name="transmissao">
-<option>Direta</option>
-<option>Indireta</option>
-</select>
-
-<h3>Observações</h3>
-<textarea name="obs"></textarea>
-
-<h3>Investigador</h3>
-<input name="nome" placeholder="Nome">
-<input name="funcao" placeholder="Função">
-
+<input name="casos" placeholder="Casos">
+<textarea name="obs" placeholder="Observações"></textarea>
 </form>
-</main>
 
 </body>
 </html>
