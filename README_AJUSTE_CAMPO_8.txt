@@ -1,4 +1,5 @@
-Ajuste aplicado no campo 8 do PDF:
+Ajuste definitivo do campo 8:
 - título quebrado em 2 linhas
-- altura do campo aumentada para evitar corte do texto
-- função drawField atualizada para suportar rótulos com quebra de linha
+- altura do campo aumentada
+- campos 7, 8 e 9 reposicionados para não cortar o título
+- drawField atualizado para suportar rótulos em mais de uma linha

@@ -110,10 +110,10 @@
       // Notificação de Surto
       const sec2H = 96;
       drawVertical(page, bold, 'Notificação de Surto', y, sec2H);
-      drawField(page, font, '7 Data dos 1os Sintomas do 1º Caso Suspeito', val('data_primeiros_sintomas'), CONTENT_X, y, 170, 32, { date: true });
-      drawField(page, font, '8 Nº de Casos Suspeitos / Expostos até a Data da Notificação', val('numero_casos_suspeitos'), CONTENT_X + 170, y, 160, 32, { digits: true });
-      drawField(page, font, '9 Local Inicial de Ocorrência do Surto', val('local_inicial_surto'), CONTENT_X, y - 32, CONTENT_W, 32, { maxChars: 80 });
-      drawField(page, font, 'Especificar (quando for Outros)', val('local_inicial_surto_outros'), CONTENT_X, y - 64, CONTENT_W, 32, { maxChars: 80 });
+      drawField(page, font, '7 Data dos 1os Sintomas do 1º Caso Suspeito', val('data_primeiros_sintomas'), CONTENT_X, y, 170, 40, { date: true });
+      drawField(page, font, '8 Nº de Casos Suspeitos / Expostos\naté a Data da Notificação', val('numero_casos_suspeitos'), CONTENT_X + 170, y, 160, 40, { digits: true, maxChars: 6 });
+      drawField(page, font, '9 Local Inicial de Ocorrência do Surto', val('local_inicial_surto'), CONTENT_X, y - 40, CONTENT_W, 28, { maxChars: 80 });
+      drawField(page, font, 'Especificar (quando for Outros)', val('local_inicial_surto_outros'), CONTENT_X, y - 68, CONTENT_W, 28, { maxChars: 80 });
       y -= sec2H + 6;
 
       // Dados de Ocorrência
