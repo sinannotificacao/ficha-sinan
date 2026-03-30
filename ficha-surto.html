@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ficha de Investigação de Surto</title>
+  <title>Ficha de Notificação de Surto</title>
   <link rel="stylesheet" href="styles-surto.css" />
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
   <script defer src="app-surto.js"></script>
@@ -12,270 +12,498 @@
   <header class="topbar no-print">
     <div class="topbar-content">
       <a href="index.html" class="menu-back">← Voltar ao menu</a>
-      <h1>Ficha de Investigação de Surto</h1>
-      <p>Versão corrigida: somente os campos da ficha oficial de investigação de surto.</p>
+      <h1>Ficha de Notificação de Surto</h1>
+      <p>Preencha os campos e exporte no modelo oficial do SINAN. Ative a grade debug para calibrar coordenadas.</p>
     </div>
     <div class="topbar-actions">
       <button id="fillSampleBtn" type="button">Preencher exemplo</button>
       <button id="clearBtn" type="button" class="secondary">Limpar</button>
-      <button id="exportBtn" type="button" class="primary">Exportar PDF</button>
+      <button id="toggleGridBtn" type="button">Grade debug: desligada</button>
+      <button id="exportBtn" type="button" class="primary">Exportar PDF oficial</button>
     </div>
   </header>
 
   <main>
     <form id="notificationForm">
-      <section class="sheet-card">
-        <div class="sheet-header">
-          <div class="brand-block">
-            <div class="brand-country">República Federativa do Brasil</div>
-            <div class="brand-ministry">Ministério da Saúde</div>
-            <div class="brand-sinan">SINAN</div>
-            <div class="brand-system">SISTEMA DE INFORMAÇÃO DE AGRAVOS DE NOTIFICAÇÃO</div>
+      <div id="document" class="document">
+        <section class="page">
+          <div class="sheet-header">
+            <div class="sheet-brand">
+              <img src="img/logo-prefeitura.png" alt="Logo" class="brand-logo" onerror="this.style.display='none'" />
+              <div>
+                <div class="brand-country">República Federativa do Brasil</div>
+                <div class="brand-ministry">Ministério da Saúde</div>
+              </div>
+            </div>
+            <div class="sheet-title-wrap">
+              <div class="sheet-sinan">SINAN</div>
+              <div class="sheet-system">SISTEMA DE INFORMAÇÃO DE AGRAVOS DE NOTIFICAÇÃO</div>
+              <div class="sheet-title">FICHA DE NOTIFICAÇÃO DE SURTO</div>
+            </div>
+            <div class="sheet-number field compact-field">
+              <label><span class="field-num">Nº</span> Número</label>
+              <input type="text" name="numero_notificacao" />
+            </div>
           </div>
-          <div class="title-block">
-            <div class="title-main">FICHA DE INVESTIGAÇÃO DE SURTO</div>
-          </div>
-          <div class="number-block">
-            <label>Nº</label>
-            <input type="text" name="numero_notificacao" />
-          </div>
-        </div>
 
-        <section class="section-card">
-          <div class="section-title">Dados Gerais</div>
-          <div class="grid cols-12">
-            <div class="field span-4">
-              <label><span class="field-num">1</span> Tipo de Notificação</label>
-              <select name="tipo_notificacao">
-                <option value="3 - Surto">3 - Surto</option>
-              </select>
-            </div>
-            <div class="field span-5">
-              <label><span class="field-num">2</span> Agravo/doença</label>
-              <input type="text" name="agravo_doenca" />
-            </div>
-            <div class="field span-3 compact-field">
-              <label><span class="field-num">3</span> Data da Notificação</label>
-              <input type="date" name="data_notificacao" />
-            </div>
+          <section class="section-card">
+            <div class="section-title">Dados Gerais</div>
+            <div class="grid cols-12">
+              <div class="field span-6">
+                <label><span class="field-num">1</span> Tipo de Notificação</label>
+                <div class="options four-cols">
+                  <label class="option-item"><input type="radio" name="tipo_notificacao" value="1 - Negativa" /> 1 - Negativa</label>
+                  <label class="option-item"><input type="radio" name="tipo_notificacao" value="2 - Individual" /> 2 - Individual</label>
+                  <label class="option-item"><input type="radio" name="tipo_notificacao" value="3 - Surto" /> 3 - Surto</label>
+                  <label class="option-item"><input type="radio" name="tipo_notificacao" value="4 - Inquérito Tracoma" /> 4 - Inquérito Tracoma</label>
+                </div>
+              </div>
+              <div class="field span-4">
+                <label><span class="field-num">2</span> Agravo/doença</label>
+                <input type="text" name="agravo_doenca" />
+              </div>
+              <div class="field span-2 compact-field">
+                <label><span class="field-num">3</span> Data da Notificação</label>
+                <input type="date" name="data_notificacao" />
+              </div>
 
-            <div class="field span-1 compact-field">
-              <label><span class="field-num">4</span> UF</label>
-              <input type="text" name="uf_notificacao" maxlength="2" />
-            </div>
-            <div class="field span-7">
-              <label><span class="field-num">5</span> Município de Notificação</label>
-              <input type="text" name="municipio_notificacao" />
-            </div>
-            <div class="field span-2 compact-field">
-              <label>Código (IBGE)</label>
-              <input type="text" name="ibge_notificacao" />
-            </div>
-            <div class="field span-2 compact-field">
-              <label>Código (CID10)</label>
-              <input type="text" name="cid10" />
-            </div>
+              <div class="field span-1 compact-field">
+                <label><span class="field-num">4</span> UF</label>
+                <input type="text" name="uf_notificacao" maxlength="2" />
+              </div>
+              <div class="field span-5">
+                <label><span class="field-num">5</span> Município de Notificação</label>
+                <input type="text" name="municipio_notificacao" />
+              </div>
+              <div class="field span-2 compact-field">
+                <label>Código (IBGE)</label>
+                <input type="text" name="ibge_notificacao" />
+              </div>
+              <div class="field span-3">
+                <label><span class="field-num">6</span> Unidade de Saúde (ou outra fonte notificadora)</label>
+                <input type="text" name="unidade_notificadora" />
+              </div>
+              <div class="field span-1 compact-field">
+                <label>Código</label>
+                <input type="text" name="codigo_unidade" />
+              </div>
 
-            <div class="field span-9">
-              <label><span class="field-num">6</span> Unidade de Saúde (ou outra fonte notificadora)</label>
-              <input type="text" name="unidade_notificadora" />
+              <div class="field span-2 compact-field">
+                <label><span class="field-num">7</span> Data dos Primeiros Sintomas</label>
+                <input type="date" name="data_primeiros_sintomas" />
+              </div>
+              <div class="field span-7">
+                <label><span class="field-num">8</span> Nome do Paciente</label>
+                <input type="text" name="nome_paciente" />
+              </div>
+              <div class="field span-3 compact-field">
+                <label><span class="field-num">9</span> Data de Nascimento</label>
+                <input type="date" name="data_nascimento" />
+              </div>
             </div>
-            <div class="field span-3 compact-field">
-              <label>Código</label>
-              <input type="text" name="codigo_unidade" />
+          </section>
+
+          <section class="section-card">
+            <div class="section-title">Notificação Individual</div>
+            <div class="grid cols-12">
+              <div class="field span-2 compact-field">
+                <label><span class="field-num">10</span> (ou) Idade</label>
+                <input type="text" name="idade" />
+              </div>
+              <div class="field span-2">
+                <label>Tipo da idade</label>
+                <select name="tipo_idade">
+                  <option value=""></option>
+                  <option>1 - Hora</option>
+                  <option>2 - Dia</option>
+                  <option>3 - Mês</option>
+                  <option>4 - Ano</option>
+                </select>
+              </div>
+              <div class="field span-2">
+                <label><span class="field-num">11</span> Sexo</label>
+                <select name="sexo">
+                  <option value=""></option>
+                  <option>M - Masculino</option>
+                  <option>F - Feminino</option>
+                  <option>I - Ignorado</option>
+                </select>
+              </div>
+              <div class="field span-3">
+                <label><span class="field-num">12</span> Gestante</label>
+                <select name="gestante">
+                  <option value=""></option>
+                  <option>1 - 1º Trimestre</option>
+                  <option>2 - 2º Trimestre</option>
+                  <option>3 - 3º Trimestre</option>
+                  <option>4 - Idade gestacional ignorada</option>
+                  <option>5 - Não</option>
+                  <option>6 - Não se aplica</option>
+                  <option>9 - Ignorado</option>
+                </select>
+              </div>
+              <div class="field span-3">
+                <label><span class="field-num">13</span> Raça/Cor</label>
+                <select name="raca_cor">
+                  <option value=""></option>
+                  <option>1 - Branca</option>
+                  <option>2 - Preta</option>
+                  <option>3 - Amarela</option>
+                  <option>4 - Parda</option>
+                  <option>5 - Indígena</option>
+                  <option>9 - Ignorado</option>
+                </select>
+              </div>
+
+              <div class="field span-8">
+                <label><span class="field-num">14</span> Escolaridade</label>
+                <select name="escolaridade">
+                  <option value=""></option>
+                  <option>0 - Analfabeto</option>
+                  <option>1 - 1ª a 4ª série incompleta do EF (antigo primário ou 1º grau)</option>
+                  <option>2 - 4ª série completa do EF (antigo primário ou 1º grau)</option>
+                  <option>3 - 5ª à 8ª série incompleta do EF (antigo ginásio ou 1º grau)</option>
+                  <option>4 - Ensino fundamental completo (antigo ginásio ou 1º grau)</option>
+                  <option>5 - Ensino médio incompleto (antigo colegial ou 2º grau)</option>
+                  <option>6 - Ensino médio completo (antigo colegial ou 2º grau)</option>
+                  <option>7 - Educação superior incompleta</option>
+                  <option>8 - Educação superior completa</option>
+                  <option>9 - Ignorado</option>
+                  <option>10 - Não se aplica</option>
+                </select>
+              </div>
+              <div class="field span-4">
+                <label><span class="field-num">15</span> Número do Cartão SUS</label>
+                <input type="text" name="cartao_sus" />
+              </div>
+              <div class="field span-12">
+                <label><span class="field-num">16</span> Nome da mãe</label>
+                <input type="text" name="nome_mae" />
+              </div>
             </div>
-          </div>
+          </section>
+
+          <section class="section-card">
+            <div class="section-title">Notificação de Surto</div>
+            <p class="helper-text">Preencher quando aplicável.</p>
+            <div class="grid cols-12">
+              <div class="field span-3 compact-field">
+                <label><span class="field-num">17</span> Data dos 1ºs Sintomas do 1º Caso Suspeito</label>
+                <input type="date" name="data_primeiros_sintomas_caso_suspeito" />
+              </div>
+              <div class="field span-3 compact-field">
+                <label><span class="field-num">18</span> Nº de Casos Suspeitos/Expostos</label>
+                <input type="text" name="numero_casos_suspeitos" />
+              </div>
+              <div class="field span-6">
+                <label><span class="field-num">19</span> Local Inicial de Ocorrência do Surto</label>
+                <select name="local_inicial_surto">
+                  <option value=""></option>
+                  <option>1 - Residência</option>
+                  <option>2 - Hospital / Unidade de Saúde</option>
+                  <option>3 - Creche / Escola</option>
+                  <option>4 - Asilo</option>
+                  <option>5 - Outras instituições (alojamento, trabalho)</option>
+                  <option>6 - Restaurante / Padaria</option>
+                  <option>7 - Eventos</option>
+                  <option>8 - Casos dispersos no bairro</option>
+                  <option>9 - Casos dispersos pelo município</option>
+                  <option>10 - Casos dispersos em mais de um município</option>
+                  <option>11 - Outros</option>
+                </select>
+              </div>
+              <div class="field span-12">
+                <label>Especificar (quando for Outros)</label>
+                <input type="text" name="local_inicial_surto_outros" />
+              </div>
+            </div>
+          </section>
+
+          <section class="section-card">
+            <div class="section-title">Dados de Residência</div>
+            <div class="grid cols-12">
+              <div class="field span-1 compact-field">
+                <label><span class="field-num">20</span> UF</label>
+                <input type="text" name="uf_residencia" maxlength="2" />
+              </div>
+              <div class="field span-5">
+                <label><span class="field-num">21</span> Município de Residência</label>
+                <input type="text" name="municipio_residencia" />
+              </div>
+              <div class="field span-2 compact-field">
+                <label>Código (IBGE)</label>
+                <input type="text" name="ibge_residencia" />
+              </div>
+              <div class="field span-4">
+                <label><span class="field-num">22</span> Distrito</label>
+                <input type="text" name="distrito_residencia" />
+              </div>
+
+              <div class="field span-3">
+                <label><span class="field-num">23</span> Bairro</label>
+                <input type="text" name="bairro_residencia" />
+              </div>
+              <div class="field span-5">
+                <label><span class="field-num">24</span> Logradouro (rua, avenida, ...)</label>
+                <input type="text" name="logradouro_residencia" />
+              </div>
+              <div class="field span-2 compact-field">
+                <label>Código</label>
+                <input type="text" name="codigo_logradouro" />
+              </div>
+              <div class="field span-2 compact-field">
+                <label><span class="field-num">25</span> Número</label>
+                <input type="text" name="numero_residencia" />
+              </div>
+
+              <div class="field span-5">
+                <label><span class="field-num">26</span> Complemento (apto., casa, ...)</label>
+                <input type="text" name="complemento_residencia" />
+              </div>
+              <div class="field span-3">
+                <label><span class="field-num">27</span> Geo campo 1</label>
+                <input type="text" name="geo1" />
+              </div>
+              <div class="field span-4">
+                <label><span class="field-num">28</span> Geo campo 2</label>
+                <input type="text" name="geo2" />
+              </div>
+
+              <div class="field span-4">
+                <label><span class="field-num">29</span> Ponto de Referência</label>
+                <input type="text" name="ponto_referencia" />
+              </div>
+              <div class="field span-2 compact-field">
+                <label><span class="field-num">30</span> CEP</label>
+                <input type="text" name="cep" />
+              </div>
+              <div class="field span-3 compact-field">
+                <label><span class="field-num">31</span> (DDD) Telefone</label>
+                <input type="text" name="telefone" />
+              </div>
+              <div class="field span-3">
+                <label><span class="field-num">32</span> Zona</label>
+                <select name="zona_residencia">
+                  <option value=""></option>
+                  <option>1 - Urbana</option>
+                  <option>2 - Rural</option>
+                  <option>3 - Periurbana</option>
+                  <option>9 - Ignorado</option>
+                </select>
+              </div>
+
+              <div class="field span-12">
+                <label><span class="field-num">33</span> País (se residente fora do Brasil)</label>
+                <input type="text" name="pais_residente_fora" />
+              </div>
+            </div>
+          </section>
+
+          <section class="section-card">
+            <div class="section-title">Notificante</div>
+            <div class="grid cols-12">
+              <div class="field span-12">
+                <label>Município/Unidade de Saúde</label>
+                <input type="text" name="notificante_municipio_unidade" />
+              </div>
+              <div class="field span-5">
+                <label>Nome</label>
+                <input type="text" name="notificante_nome" />
+              </div>
+              <div class="field span-4">
+                <label>Função</label>
+                <input type="text" name="notificante_funcao" />
+              </div>
+              <div class="field span-3">
+                <label>Assinatura</label>
+                <input type="text" name="notificante_assinatura" />
+              </div>
+            </div>
+            <div class="page-footer footer-line">
+              <span>Notificação</span>
+              <span>Sinan NET</span>
+              <span>SVS   17/07/2006</span>
+            </div>
+          </section>
         </section>
 
-        <section class="section-card">
-          <div class="section-title">Notificação de Surto</div>
-          <div class="grid cols-12">
-            <div class="field span-4 compact-field">
-              <label><span class="field-num">7</span> Data dos 1os Sintomas do 1º Caso Suspeito</label>
-              <input type="date" name="data_primeiros_sintomas" />
-            </div>
-            <div class="field span-4 compact-field">
-              <label><span class="field-num">8</span> Nº de Casos Suspeitos / Expostos até a Data da Notificação</label>
-              <input type="text" name="numero_casos_suspeitos" />
-            </div>
-            <div class="field span-4">
-              <label><span class="field-num">9</span> Local Inicial de Ocorrência do Surto</label>
-              <select name="local_inicial_surto">
-                <option value=""></option>
-                <option>1 - Residência</option>
-                <option>2 - Hospital / Unidade de Saúde</option>
-                <option>3 - Creche / Escola</option>
-                <option>4 - Asilo</option>
-                <option>5 - Outras Instituições (alojamento, trabalho)</option>
-                <option>6 - Restaurante / Padaria (similares)</option>
-                <option>7 - Eventos</option>
-                <option>8 - Casos Dispersos no Bairro</option>
-                <option>9 - Casos Dispersos Pelo Município</option>
-                <option>10 - Casos Dispersos em mais de um Município</option>
-                <option>11 - Outros</option>
-              </select>
-            </div>
-            <div class="field span-12">
-              <label>Especificar (quando for Outros)</label>
-              <input type="text" name="local_inicial_surto_outros" />
-            </div>
+        <section class="page">
+          <div class="sheet-title-only">
+            <div class="sheet-title">DADOS COMPLEMENTARES</div>
+            <div class="sheet-subtitle">(ANOTAR TODOS OS DADOS DISPONÍVEIS NO MOMENTO DA NOTIFICAÇÃO)</div>
           </div>
+
+          <section class="section-card">
+            <div class="section-title">Notificação Individual</div>
+            <div class="grid cols-12">
+              <div class="field span-3 compact-field">
+                <label><span class="field-num">01</span> Data da coleta da 1ª amostra da sorologia</label>
+                <input type="date" name="data_coleta_sorologia" />
+              </div>
+              <div class="field span-3 compact-field">
+                <label><span class="field-num">02</span> Data da coleta da 1ª amostra de outra amostra</label>
+                <input type="date" name="data_coleta_outra_amostra" />
+              </div>
+              <div class="field span-6">
+                <label><span class="field-num">03</span> Especificar tipo de exame</label>
+                <input type="text" name="tipo_exame" />
+              </div>
+
+              <div class="field span-4">
+                <label><span class="field-num">04</span> Óbito?</label>
+                <select name="obito">
+                  <option value=""></option>
+                  <option>1 - Sim</option>
+                  <option>2 - Não</option>
+                  <option>9 - Ignorado</option>
+                </select>
+              </div>
+              <div class="field span-4">
+                <label><span class="field-num">05</span> Contato com caso semelhante?</label>
+                <select name="contato_caso_semelhante">
+                  <option value=""></option>
+                  <option>1 - Sim</option>
+                  <option>2 - Não</option>
+                  <option>9 - Ignorado</option>
+                </select>
+              </div>
+              <div class="field span-4">
+                <label><span class="field-num">06</span> Presença de exantema?</label>
+                <select name="presenca_exantema">
+                  <option value=""></option>
+                  <option>1 - Sim</option>
+                  <option>2 - Não</option>
+                  <option>9 - Ignorado</option>
+                </select>
+              </div>
+
+              <div class="field span-3 compact-field">
+                <label><span class="field-num">07</span> Data do início do exantema</label>
+                <input type="date" name="data_inicio_exantema" />
+              </div>
+              <div class="field span-5">
+                <label><span class="field-num">08</span> Presença de petéquias ou sufusões hemorrágicas?</label>
+                <select name="petequias_hemorragicas">
+                  <option value=""></option>
+                  <option>1 - Sim</option>
+                  <option>2 - Não</option>
+                  <option>9 - Ignorado</option>
+                </select>
+              </div>
+              <div class="field span-4">
+                <label><span class="field-num">09</span> Foi realizado líquor?</label>
+                <select name="liquor">
+                  <option value=""></option>
+                  <option>1 - Sim</option>
+                  <option>2 - Não</option>
+                  <option>9 - Ignorado</option>
+                </select>
+              </div>
+
+              <div class="field span-6">
+                <label><span class="field-num">10</span> Resultado da bacterioscopia</label>
+                <input type="text" name="resultado_bacterioscopia" />
+              </div>
+              <div class="field span-6">
+                <label><span class="field-num">11</span> O paciente tomou vacina contra agravo notificado neste impresso?</label>
+                <select name="tomou_vacina">
+                  <option value=""></option>
+                  <option>1 - Sim</option>
+                  <option>2 - Não</option>
+                  <option>9 - Ignorado</option>
+                </select>
+              </div>
+
+              <div class="field span-3 compact-field">
+                <label><span class="field-num">12</span> Data da última dose tomada</label>
+                <input type="date" name="data_ultima_dose" />
+              </div>
+              <div class="field span-4">
+                <label><span class="field-num">13</span> Ocorreu hospitalização?</label>
+                <select name="hospitalizacao">
+                  <option value=""></option>
+                  <option>1 - Sim</option>
+                  <option>2 - Não</option>
+                  <option>9 - Ignorado</option>
+                </select>
+              </div>
+              <div class="field span-3 compact-field">
+                <label><span class="field-num">14</span> Data da hospitalização</label>
+                <input type="date" name="data_hospitalizacao" />
+              </div>
+              <div class="field span-2 compact-field">
+                <label><span class="field-num">15</span> UF</label>
+                <input type="text" name="uf_hospital" maxlength="2" />
+              </div>
+
+              <div class="field span-4">
+                <label><span class="field-num">16</span> Município do hospital</label>
+                <input type="text" name="municipio_hospital" />
+              </div>
+              <div class="field span-2 compact-field">
+                <label>Código (IBGE)</label>
+                <input type="text" name="ibge_hospital" />
+              </div>
+              <div class="field span-4">
+                <label><span class="field-num">17</span> Nome do hospital</label>
+                <input type="text" name="nome_hospital" />
+              </div>
+              <div class="field span-2 compact-field">
+                <label>Código</label>
+                <input type="text" name="codigo_hospital" />
+              </div>
+            </div>
+          </section>
+
+          <section class="section-card">
+            <div class="section-title">Notificação de Surto</div>
+            <div class="field textarea-field">
+              <label><span class="field-num">18</span> Hipóteses diagnósticas no momento da notificação</label>
+              <div class="dual-line-wrap">
+                <div class="inline-pair">
+                  <span class="inline-label">1ª Hipótese Diagnóstica - CID 10:</span>
+                  <input type="text" name="hipotese_diagnostica_1" />
+                </div>
+                <div class="inline-pair">
+                  <span class="inline-label">2ª Hipótese Diagnóstica - CID 10:</span>
+                  <input type="text" name="hipotese_diagnostica_2" />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section-card">
+            <div class="section-title">Local provável de infecção</div>
+            <p class="helper-text"><span class="field-num">19</span> Local provável de infecção (classificação provisória)</p>
+            <div class="grid cols-12">
+              <div class="field span-5">
+                <label>País</label>
+                <input type="text" name="pais_infeccao" />
+              </div>
+              <div class="field span-1 compact-field">
+                <label>UF</label>
+                <input type="text" name="uf_infeccao" maxlength="2" />
+              </div>
+              <div class="field span-6">
+                <label>Município</label>
+                <input type="text" name="municipio_infeccao" />
+              </div>
+              <div class="field span-5">
+                <label>Distrito</label>
+                <input type="text" name="distrito_infeccao" />
+              </div>
+              <div class="field span-7">
+                <label>Bairro</label>
+                <input type="text" name="bairro_infeccao" />
+              </div>
+            </div>
+            <div class="page-footer footer-line">
+              <span>Dados Complementares/ Notificação</span>
+              <span>SVS   17/07/2006</span>
+            </div>
+          </section>
         </section>
-
-        <section class="section-card">
-          <div class="section-title">Dados de Ocorrência</div>
-          <div class="grid cols-12">
-            <div class="field span-1 compact-field">
-              <label><span class="field-num">10</span> UF</label>
-              <input type="text" name="uf_residencia" maxlength="2" />
-            </div>
-            <div class="field span-5">
-              <label><span class="field-num">11</span> Município de Residência</label>
-              <input type="text" name="municipio_residencia" />
-            </div>
-            <div class="field span-2 compact-field">
-              <label>Código (IBGE)</label>
-              <input type="text" name="ibge_residencia" />
-            </div>
-            <div class="field span-4">
-              <label><span class="field-num">12</span> Distrito</label>
-              <input type="text" name="distrito_residencia" />
-            </div>
-
-            <div class="field span-3">
-              <label><span class="field-num">13</span> Bairro</label>
-              <input type="text" name="bairro_residencia" />
-            </div>
-            <div class="field span-5">
-              <label><span class="field-num">14</span> Logradouro (rua, avenida,...)</label>
-              <input type="text" name="logradouro_residencia" />
-            </div>
-            <div class="field span-2 compact-field">
-              <label>Código</label>
-              <input type="text" name="codigo_logradouro" />
-            </div>
-            <div class="field span-2 compact-field">
-              <label><span class="field-num">15</span> Número</label>
-              <input type="text" name="numero_residencia" />
-            </div>
-
-            <div class="field span-4">
-              <label><span class="field-num">16</span> Complemento (apto., casa, ...)</label>
-              <input type="text" name="complemento_residencia" />
-            </div>
-            <div class="field span-2">
-              <label><span class="field-num">17</span> Geo campo 1</label>
-              <input type="text" name="geo1" />
-            </div>
-            <div class="field span-2">
-              <label><span class="field-num">18</span> Geo campo 2</label>
-              <input type="text" name="geo2" />
-            </div>
-            <div class="field span-4">
-              <label><span class="field-num">19</span> Ponto de Referência</label>
-              <input type="text" name="ponto_referencia" />
-            </div>
-
-            <div class="field span-2 compact-field">
-              <label><span class="field-num">20</span> CEP</label>
-              <input type="text" name="cep" />
-            </div>
-            <div class="field span-3 compact-field">
-              <label><span class="field-num">21</span> (DDD) Telefone</label>
-              <input type="text" name="telefone" />
-            </div>
-            <div class="field span-3">
-              <label><span class="field-num">22</span> Zona</label>
-              <select name="zona_residencia">
-                <option value=""></option>
-                <option>1 - Urbana</option>
-                <option>2 - Rural</option>
-                <option>3 - Periurbana</option>
-                <option>9 - Ignorado</option>
-              </select>
-            </div>
-            <div class="field span-4">
-              <label><span class="field-num">23</span> País (se residente fora do Brasil)</label>
-              <input type="text" name="pais_residente_fora" />
-            </div>
-          </div>
-        </section>
-
-        <section class="section-card">
-          <div class="section-title">Situação Inicial</div>
-          <div class="grid cols-12">
-            <div class="field span-3 compact-field">
-              <label><span class="field-num">24</span> Data da Investigação</label>
-              <input type="date" name="data_investigacao" />
-            </div>
-            <div class="field span-5">
-              <label><span class="field-num">25</span> Modo Provável da Transmissão</label>
-              <select name="modo_transmissao">
-                <option value=""></option>
-                <option>1 - Direta (pessoa a pessoa)</option>
-                <option>2 - Indireta (Veículo comum ou Vetor)</option>
-                <option>9 - Ignorado</option>
-              </select>
-            </div>
-            <div class="field span-4">
-              <label><span class="field-num">26</span> Se indireta, qual o veículo de transmissão provável</label>
-              <select name="veiculo_transmissao">
-                <option value=""></option>
-                <option>1 - Alimento/Água</option>
-                <option>2 - Recursos Hídricos Contaminados</option>
-                <option>3 - Vetor</option>
-                <option>4 - Produto</option>
-                <option>5 - Fômite</option>
-                <option>6 - Outro</option>
-                <option>9 - Ignorado</option>
-              </select>
-            </div>
-            <div class="field span-12">
-              <label>Especificar (quando for Outro)</label>
-              <input type="text" name="veiculo_transmissao_outros" />
-            </div>
-          </div>
-        </section>
-
-        <section class="section-card">
-          <div class="section-title">Observações</div>
-          <div class="field span-12 textarea-field">
-            <textarea name="observacoes" rows="5"></textarea>
-          </div>
-        </section>
-
-        <section class="section-card">
-          <div class="section-title">Investigador</div>
-          <div class="grid cols-12">
-            <div class="field span-6">
-              <label>Município/Unidade de Saúde</label>
-              <input type="text" name="notificante_municipio_unidade" />
-            </div>
-            <div class="field span-2 compact-field">
-              <label>Código da Unid. de Saúde</label>
-              <input type="text" name="codigo_unid_saude" />
-            </div>
-            <div class="field span-4"></div>
-            <div class="field span-4">
-              <label>Nome</label>
-              <input type="text" name="notificante_nome" />
-            </div>
-            <div class="field span-4">
-              <label>Função</label>
-              <input type="text" name="notificante_funcao" />
-            </div>
-            <div class="field span-4">
-              <label>Assinatura</label>
-              <input type="text" name="notificante_assinatura" />
-            </div>
-          </div>
-          <div class="page-footer footer-line">
-            <span>Surto</span>
-            <span>Sinan NET</span>
-            <span>SVS 29/05/2006</span>
-          </div>
-        </section>
-      </section>
+      </div>
     </form>
   </main>
 </body>

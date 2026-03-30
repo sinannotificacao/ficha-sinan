@@ -1,228 +1,429 @@
+
 (() => {
-  const { PDFDocument, StandardFonts, degrees, rgb } = PDFLib;
+  const BASE_PDF_URL = 'Notificacao_Individual_v5.pdf';
+  const PDF_W = 595;
+  const PDF_H = 841;
+  const IMG_W = 1240;
+  const IMG_H = 1753;
+
+  const OFFSET_X = -6;
+  const OFFSET_Y = -28;
+
+  const px = (x) => ((x + OFFSET_X) / IMG_W) * PDF_W;
+  const py = (y, size = 10) => PDF_H - ((y + OFFSET_Y) / IMG_H) * PDF_H - size;
+
   const form = document.getElementById('notificationForm');
   const exportBtn = document.getElementById('exportBtn');
   const clearBtn = document.getElementById('clearBtn');
   const fillSampleBtn = document.getElementById('fillSampleBtn');
 
-  const A4_W = 595.28;
-  const A4_H = 841.89;
-  const M = 26;
-  const SIDE = 24;
-  const CONTENT_X = M + SIDE;
-  const CONTENT_W = A4_W - CONTENT_X - M;
+  let debugGrid = false;
+  const toggleGridBtn = document.getElementById('toggleGridBtn');
 
-  function val(name) {
-    const field = form.elements[name];
-    return field ? String(field.value || '').trim() : '';
-  }
+  function drawDebugGrid(page, font, pageLabel) {
+    const { rgb } = PDFLib;
+    const width = page.getWidth();
+    const height = page.getHeight();
+    const step = 36; // about 0.5 inch
+    const majorStep = 72; // about 1 inch
 
-  function formatDateBR(v) {
-    if (!v) return '';
-    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v);
-    return m ? `${m[3]}/${m[2]}/${m[1]}` : v;
-  }
-
-  function onlyDigits(v) {
-    return String(v || '').replace(/\D+/g, '');
-  }
-
-  function fitText(text, maxChars) {
-    const s = String(text || '').trim();
-    return s.length > maxChars ? s.slice(0, maxChars - 1) + '…' : s;
-  }
-
-  function splitLines(text, maxChars) {
-    const words = String(text || '').trim().split(/\s+/).filter(Boolean);
-    const lines = [];
-    let current = '';
-    for (const w of words) {
-      const test = current ? current + ' ' + w : w;
-      if (test.length <= maxChars) current = test;
-      else {
-        if (current) lines.push(current);
-        current = w;
+    for (let x = 0; x <= width; x += step) {
+      const isMajor = x % majorStep === 0;
+      page.drawLine({
+        start: { x, y: 0 },
+        end: { x, y: height },
+        thickness: isMajor ? 0.8 : 0.35,
+        color: isMajor ? rgb(1, 0, 0) : rgb(1, 0.65, 0.65),
+        opacity: isMajor ? 0.45 : 0.22,
+      });
+      if (x < width - 18) {
+        page.drawText(String(Math.round(x)), {
+          x: x + 2,
+          y: height - 10,
+          size: 6,
+          font,
+          color: rgb(0.75, 0, 0),
+          opacity: 0.85,
+        });
       }
     }
-    if (current) lines.push(current);
-    return lines;
-  }
 
-  function drawField(page, font, label, value, x, y, w, h, opts = {}) {
-    page.drawRectangle({ x, y: y - h, width: w, height: h, borderWidth: 0.8, borderColor: rgb(.1,.1,.1) });
-    page.drawText(label, { x: x + 4, y: y - 12, size: 7.2, font });
-    const text = opts.date ? formatDateBR(value) : (opts.digits ? onlyDigits(value) : value);
-    if (opts.multiline) {
-      const lines = splitLines(text, opts.maxChars || 70).slice(0, opts.maxLines || 3);
-      lines.forEach((line, i) => page.drawText(line, { x: x + 4, y: y - 24 - i * 11, size: 9.3, font }));
-    } else {
-      page.drawText(fitText(text, opts.maxChars || Math.floor(w / 5.7)), { x: x + 4, y: y - h + 8, size: 9.4, font });
+    for (let y = 0; y <= height; y += step) {
+      const isMajor = y % majorStep === 0;
+      page.drawLine({
+        start: { x: 0, y },
+        end: { x: width, y },
+        thickness: isMajor ? 0.8 : 0.35,
+        color: isMajor ? rgb(0, 0, 1) : rgb(0.6, 0.75, 1),
+        opacity: isMajor ? 0.45 : 0.22,
+      });
+      if (y < height - 12) {
+        page.drawText(String(Math.round(y)), {
+          x: 2,
+          y: y + 2,
+          size: 6,
+          font,
+          color: rgb(0, 0, 0.75),
+          opacity: 0.85,
+        });
+      }
     }
+
+    page.drawRectangle({
+      x: 0,
+      y: height - 22,
+      width: 195,
+      height: 22,
+      color: rgb(1, 1, 0.85),
+      opacity: 0.75,
+    });
+    page.drawText(`GRADE DEBUG ATIVA - ${pageLabel}`, {
+      x: 6,
+      y: height - 15,
+      size: 9,
+      font,
+      color: rgb(0.5, 0.2, 0),
+      opacity: 1,
+    });
   }
 
-  function drawVertical(page, font, text, y, h) {
-    page.drawRectangle({ x: M, y: y - h, width: SIDE, height: h, borderWidth: 0.9, borderColor: rgb(.1,.1,.1) });
-    page.drawText(text, { x: M + 8, y: y - h + 12, size: 9, font, rotate: degrees(90) });
+
+  function getField(name) {
+    return form.elements[name];
   }
 
-  async function exportPDF() {
-    exportBtn.disabled = true;
-    exportBtn.textContent = 'Gerando PDF...';
+  function getValue(name) {
+    const field = getField(name);
+    if (!field) return '';
+    if (field.type === 'radio') {
+      const checked = form.querySelector(`input[name="${name}"]:checked`);
+      return checked ? checked.value : '';
+    }
+    return String(field.value || '').trim();
+  }
+
+  function setValue(name, value) {
+    const field = getField(name);
+    if (!field) return;
+    if (field instanceof RadioNodeList) {
+      const target = Array.from(field).find((input) => input.value === value);
+      if (target) target.checked = true;
+      return;
+    }
+    field.value = value;
+  }
+
+  function formatDateBR(value) {
+    if (!value) return '';
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    if (!match) return value;
+    return `${match[3]}${match[2]}${match[1]}`;
+  }
+
+  function onlyDigits(value) {
+    return String(value || '').replace(/\D+/g, '');
+  }
+
+  function optionCode(value) {
+    const match = String(value || '').match(/^(\d+|[MFI])/i);
+    return match ? match[1].toUpperCase() : '';
+  }
+
+  function mapSexoCode(value) {
+    const code = optionCode(value);
+    if (code === 'M') return 'M';
+    if (code === 'F') return 'F';
+    if (code === 'I') return 'I';
+    return '';
+  }
+
+  function createHelpers(page, font, bold) {
+    return {
+      text(x, y, value, size = 10, maxWidth) {
+        const text = String(value || '').trim();
+        if (!text) return;
+        const options = { x: px(x), y: py(y, size), size, font };
+        if (maxWidth) options.maxWidth = px(maxWidth);
+        page.drawText(text, options);
+      },
+      chars(x, y, value, boxWidth, size = 10, limit) {
+        const text = String(value || '').trim();
+        if (!text) return;
+        const chars = Array.from(limit ? text.slice(0, limit) : text);
+        chars.forEach((ch, idx) => {
+          page.drawText(ch, {
+            x: px(x + idx * boxWidth),
+            y: py(y, size),
+            size,
+            font,
+          });
+        });
+      },
+      boxCode(x, y, value, boxWidth = 31, size = 10, limit) {
+        this.chars(x, y, value, boxWidth, size, limit);
+      },
+      check(x, y, size = 11) {
+        page.drawText('X', { x: px(x), y: py(y, size), size, font: bold });
+      }
+    };
+  }
+
+  async function exportOfficialPdf() {
     try {
-      const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage([A4_W, A4_H]);
+      exportBtn.disabled = true;
+      exportBtn.textContent = 'Gerando PDF...';
+
+      const existingPdfBytes = await fetch(BASE_PDF_URL).then((res) => {
+        if (!res.ok) throw new Error('Arquivo base do PDF oficial não encontrado.');
+        return res.arrayBuffer();
+      });
+
+      const { PDFDocument, StandardFonts } = PDFLib;
+      const pdfDoc = await PDFDocument.load(existingPdfBytes);
+      const pages = pdfDoc.getPages();
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      if (debugGrid) {
+        drawDebugGrid(pages[0], font, 'PAGINA 1');
+        drawDebugGrid(pages[1], font, 'PAGINA 2');
+      }
 
-      page.drawRectangle({ x: 14, y: 14, width: A4_W - 28, height: A4_H - 28, borderWidth: 1, borderColor: rgb(0,0,0) });
+      const p1 = createHelpers(pages[0], font, bold);
+      const p2 = createHelpers(pages[1], font, bold);
 
-      // Header
-      const headerY = A4_H - 28;
-      page.drawRectangle({ x: M, y: headerY - 62, width: 170, height: 62, borderWidth: 0.9, borderColor: rgb(0,0,0) });
-      page.drawRectangle({ x: M + 170, y: headerY - 62, width: 290, height: 62, borderWidth: 0.9, borderColor: rgb(0,0,0) });
-      page.drawRectangle({ x: A4_W - M - 84, y: headerY - 62, width: 84, height: 62, borderWidth: 0.9, borderColor: rgb(0,0,0) });
-      page.drawText('República Federativa do Brasil', { x: M + 14, y: headerY - 18, size: 8.6, font: bold });
-      page.drawText('Ministério da Saúde', { x: M + 34, y: headerY - 31, size: 8.4, font: bold });
-      page.drawText('SINAN', { x: M + 58, y: headerY - 48, size: 14, font: bold });
-      page.drawText('SISTEMA DE INFORMAÇÃO DE AGRAVOS DE NOTIFICAÇÃO', { x: M + 190, y: headerY - 21, size: 8.4, font: bold });
-      page.drawText('FICHA DE INVESTIGAÇÃO DE SURTO', { x: M + 228, y: headerY - 42, size: 12, font: bold });
-      page.drawText('Nº', { x: A4_W - M - 72, y: headerY - 18, size: 8.5, font: bold });
-      page.drawText(fitText(val('numero_notificacao'), 14), { x: A4_W - M - 72, y: headerY - 43, size: 10, font });
+      const val = getValue;
 
-      let y = headerY - 74;
+      // PÁGINA 1
+      p1.text(946, 101, val('numero_notificacao'), 10, 220);
 
-      // Dados Gerais
-      const sec1H = 96;
-      drawVertical(page, bold, 'Dados Gerais', y, sec1H);
-      const c1 = CONTENT_X;
-      const w1 = CONTENT_W;
-      drawField(page, font, '1 Tipo de Notificação', '3 - Surto', c1, y, 110, 32);
-      drawField(page, font, '2 Agravo/doença', val('agravo_doenca'), c1 + 110, y, 220, 32);
-      drawField(page, font, '3 Data da Notificação', val('data_notificacao'), c1 + 330, y, 96, 32, { date: true, maxChars: 10 });
-      drawField(page, font, '4 UF', val('uf_notificacao').toUpperCase(), c1 + 426, y, 40, 32, { maxChars: 2 });
-      drawField(page, font, '5 Município de Notificação', val('municipio_notificacao'), c1, y - 32, 250, 32);
-      drawField(page, font, 'Código (IBGE)', val('ibge_notificacao'), c1 + 250, y - 32, 86, 32, { digits: true });
-      drawField(page, font, 'Código (CID10)', val('cid10'), c1 + 336, y - 32, 130, 32);
-      drawField(page, font, '6 Unidade de Saúde (ou outra fonte notificadora)', val('unidade_notificadora'), c1, y - 64, 340, 32);
-      drawField(page, font, 'Código', val('codigo_unidade'), c1 + 340, y - 64, 126, 32, { digits: true });
-      y -= sec1H + 6;
+      const tipo = optionCode(val('tipo_notificacao'));
+      const tipoMarks = { '1': [386, 149], '2': [508, 149], '3': [630, 149], '4': [777, 149] };
+      if (tipoMarks[tipo]) p1.check(tipoMarks[tipo][0], tipoMarks[tipo][1], 11);
 
-      // Notificação de Surto
-      const sec2H = 96;
-      drawVertical(page, bold, 'Notificação de Surto', y, sec2H);
-      drawField(page, font, '7 Data dos 1os Sintomas do 1º Caso Suspeito', val('data_primeiros_sintomas'), CONTENT_X, y, 190, 32, { date: true });
-      drawField(page, font, '8 Nº de Casos Suspeitos / Expostos', val('numero_casos_suspeitos'), CONTENT_X + 190, y, 120, 32, { digits: true, maxChars: 6 });
-      drawField(page, font, '9 Local Inicial de Ocorrência do Surto', val('local_inicial_surto'), CONTENT_X, y - 32, CONTENT_W, 36, { maxChars: 72 });
-      drawField(page, font, 'Especificar (quando for Outros)', val('local_inicial_surto_outros'), CONTENT_X, y - 68, CONTENT_W, 28, { maxChars: 80 });
-      y -= sec2H + 6;
+      p1.text(125, 193, val('agravo_doenca'), 10, 760);
+      p1.boxCode(964, 194, formatDateBR(val('data_notificacao')), 31, 10, 8);
 
-      // Dados de Ocorrência
-      const sec3H = 160;
-      drawVertical(page, bold, 'Dados de Ocorrência', y, sec3H);
-      drawField(page, font, '10 UF', val('uf_residencia').toUpperCase(), CONTENT_X, y, 40, 32, { maxChars: 2 });
-      drawField(page, font, '11 Município de Residência', val('municipio_residencia'), CONTENT_X + 40, y, 190, 32);
-      drawField(page, font, 'Código (IBGE)', val('ibge_residencia'), CONTENT_X + 230, y, 86, 32, { digits: true });
-      drawField(page, font, '12 Distrito', val('distrito_residencia'), CONTENT_X + 316, y, 150, 32);
-      drawField(page, font, '13 Bairro', val('bairro_residencia'), CONTENT_X, y - 32, 110, 32);
-      drawField(page, font, '14 Logradouro (rua, avenida,...)', val('logradouro_residencia'), CONTENT_X + 110, y - 32, 220, 32);
-      drawField(page, font, 'Código', val('codigo_logradouro'), CONTENT_X + 330, y - 32, 60, 32, { digits: true });
-      drawField(page, font, '15 Número', val('numero_residencia'), CONTENT_X + 390, y - 32, 76, 32, { maxChars: 12 });
-      drawField(page, font, '16 Complemento (apto., casa, ...)', val('complemento_residencia'), CONTENT_X, y - 64, 180, 32);
-      drawField(page, font, '17 Geo campo 1', val('geo1'), CONTENT_X + 180, y - 64, 90, 32);
-      drawField(page, font, '18 Geo campo 2', val('geo2'), CONTENT_X + 270, y - 64, 90, 32);
-      drawField(page, font, '19 Ponto de Referência', val('ponto_referencia'), CONTENT_X + 360, y - 64, 106, 32);
-      drawField(page, font, '20 CEP', val('cep'), CONTENT_X, y - 96, 90, 32, { digits: true });
-      drawField(page, font, '21 (DDD) Telefone', val('telefone'), CONTENT_X + 90, y - 96, 130, 32, { digits: true });
-      drawField(page, font, '22 Zona', val('zona_residencia'), CONTENT_X + 220, y - 96, 120, 32);
-      drawField(page, font, '23 País (se residente fora do Brasil)', val('pais_residente_fora'), CONTENT_X + 340, y - 96, 126, 32);
-      y -= sec3H + 6;
+      p1.boxCode(115, 258, val('uf_notificacao').toUpperCase(), 31, 10, 2);
+      p1.text(205, 258, val('municipio_notificacao'), 10, 470);
+      p1.boxCode(704, 258, onlyDigits(val('ibge_notificacao')), 31, 10, 6);
 
-      // Situação Inicial
-      const sec4H = 96;
-      drawVertical(page, bold, 'Situação Inicial', y, sec4H);
-      drawField(page, font, '24 Data da Investigação', val('data_investigacao'), CONTENT_X, y, 130, 32, { date: true });
-      drawField(page, font, '25 Modo Provável da Transmissão', val('modo_transmissao'), CONTENT_X + 130, y, 336, 32, { maxChars: 70 });
-      drawField(page, font, '26 Se indireta, qual o veículo de transmissão provável', val('veiculo_transmissao'), CONTENT_X, y - 32, 300, 32, { maxChars: 58 });
-      drawField(page, font, 'Especificar (quando for Outro)', val('veiculo_transmissao_outros'), CONTENT_X + 300, y - 32, 166, 32, { maxChars: 30 });
-      y -= sec4H + 6;
+      p1.text(110, 319, val('unidade_notificadora'), 10, 600);
+      p1.boxCode(735, 319, onlyDigits(val('codigo_unidade')), 31, 10, 6);
 
-      // Observações
-      const obsH = 78;
-      page.drawRectangle({ x: CONTENT_X, y: y - obsH, width: CONTENT_W, height: obsH, borderWidth: 0.9, borderColor: rgb(0,0,0) });
-      page.drawText('Observações', { x: CONTENT_X + 4, y: y - 12, size: 7.4, font: bold });
-      const obsLines = splitLines(val('observacoes'), 80).slice(0, 5);
-      obsLines.forEach((line, i) => page.drawText(line, { x: CONTENT_X + 4, y: y - 28 - i * 11, size: 9.3, font }));
-      y -= obsH + 6;
+      p1.boxCode(966, 319, formatDateBR(val('data_primeiros_sintomas')), 31, 10, 8);
+      p1.text(115, 382, val('nome_paciente'), 9, 650);
+      p1.boxCode(972, 382, formatDateBR(val('data_nascimento')), 31, 10, 8);
 
-      // Investigador
-      const invH = 58;
-      drawVertical(page, bold, 'Investigador', y, invH);
-      drawField(page, font, 'Município/Unidade de Saúde', val('notificante_municipio_unidade'), CONTENT_X, y, 240, 28);
-      drawField(page, font, 'Código da Unid. de Saúde', val('codigo_unid_saude'), CONTENT_X + 240, y, 226, 28, { digits: true });
-      drawField(page, font, 'Nome', val('notificante_nome'), CONTENT_X, y - 28, 180, 30);
-      drawField(page, font, 'Função', val('notificante_funcao'), CONTENT_X + 180, y - 28, 140, 30);
-      drawField(page, font, 'Assinatura', val('notificante_assinatura'), CONTENT_X + 320, y - 28, 146, 30);
-      page.drawText('Surto', { x: CONTENT_X, y: 22, size: 8, font });
-      page.drawText('Sinan NET', { x: CONTENT_X + 190, y: 22, size: 8, font });
-      page.drawText('SVS 29/05/2006', { x: CONTENT_X + 374, y: 22, size: 8, font });
+      p1.boxCode(111, 448, onlyDigits(val('idade')), 31, 10, 3);
+      const tipoIdade = optionCode(val('tipo_idade'));
+      const tipoIdadeMarks = { '1': [233, 447], '2': [233, 471], '3': [233, 494], '4': [233, 519] };
+      if (tipoIdadeMarks[tipoIdade]) p1.check(tipoIdadeMarks[tipoIdade][0], tipoIdadeMarks[tipoIdade][1], 10);
 
-      const bytes = await pdfDoc.save();
-      const blob = new Blob([bytes], { type: 'application/pdf' });
+      const sexo = mapSexoCode(val('sexo'));
+      const sexoMarks = { 'M': [411, 448], 'F': [411, 472], 'I': [411, 495] };
+      if (sexoMarks[sexo]) p1.check(sexoMarks[sexo][0], sexoMarks[sexo][1], 10);
+
+      const gest = optionCode(val('gestante'));
+      const gestMarks = {
+        '1': [531, 448], '2': [625, 448], '3': [759, 448],
+        '4': [531, 473], '5': [759, 473], '6': [625, 495], '9': [531, 495],
+      };
+      if (gestMarks[gest]) p1.check(gestMarks[gest][0], gestMarks[gest][1], 10);
+
+      const raca = optionCode(val('raca_cor'));
+      const racaMarks = {
+        '1': [979, 448], '2': [979, 472], '3': [1091, 448],
+        '4': [979, 495], '5': [1091, 472], '9': [1091, 495],
+      };
+      if (racaMarks[raca]) p1.check(racaMarks[raca][0], racaMarks[raca][1], 10);
+
+      const esc = optionCode(val('escolaridade'));
+      if (esc) p1.text(140, 554, esc, 10, 30);
+
+      p1.boxCode(122, 640, onlyDigits(val('cartao_sus')), 31, 10, 15);
+      p1.text(500, 640, val('nome_mae'), 9, 240);
+
+      p1.boxCode(112, 662, formatDateBR(val('data_primeiros_sintomas_caso_suspeito')), 31, 10, 8);
+      p1.boxCode(113, 712, onlyDigits(val('numero_casos_suspeitos')), 31, 10, 6);
+
+      const local = optionCode(val('local_inicial_surto'));
+      const localMarks = {
+        '1': [400, 680], '2': [618, 680], '3': [920, 680],
+        '4': [400, 708], '5': [617, 708], '6': [920, 708],
+        '7': [400, 736], '8': [617, 736], '9': [920, 736],
+        '10': [617, 762], '11': [920, 762],
+      };
+      if (localMarks[local]) p1.check(localMarks[local][0], localMarks[local][1], 10);
+      p1.text(952, 762, val('local_inicial_surto_outros'), 8, 140);
+
+      p1.boxCode(112, 835, val('uf_residencia').toUpperCase(), 31, 10, 2);
+      p1.text(190, 835, val('municipio_residencia'), 10, 430);
+      p1.boxCode(668, 835, onlyDigits(val('ibge_residencia')), 31, 10, 6);
+      p1.text(901, 835, val('distrito_residencia'), 10, 220);
+
+      p1.text(110, 895, val('bairro_residencia'), 10, 200);
+      p1.text(396, 895, val('logradouro_residencia'), 9, 300);
+      p1.boxCode(1038, 895, onlyDigits(val('codigo_logradouro')), 31, 10, 5);
+
+      p1.text(112, 945, val('numero_residencia'), 10, 90);
+      p1.text(245, 945, val('complemento_residencia'), 10, 340);
+      p1.text(883, 945, val('geo1'), 10, 160);
+
+      p1.text(112, 995, val('geo2'), 10, 180);
+      p1.text(439, 995, val('ponto_referencia'), 10, 260);
+      p1.boxCode(985, 995, onlyDigits(val('cep')), 31, 10, 8);
+
+      p1.boxCode(110, 1045, onlyDigits(val('telefone')), 31, 10, 10);
+
+      const zona = optionCode(val('zona_residencia'));
+      const zonaMarks = { '1': [701, 1045], '2': [797, 1045], '3': [701, 1069], '9': [797, 1069] };
+      if (zonaMarks[zona]) p1.check(zonaMarks[zona][0], zonaMarks[zona][1], 10);
+      p1.text(752, 1045, val('pais_residente_fora'), 10, 350);
+
+      p1.text(122, 1090, val('notificante_municipio_unidade'), 9, 420);
+      p1.text(120, 1130, val('notificante_nome'), 9, 240);
+      p1.text(534, 1130, val('notificante_funcao'), 9, 220);
+      p1.text(995, 1125, val('notificante_assinatura'), 9, 120);
+
+      // PÁGINA 2
+      p2.boxCode(145, 208, formatDateBR(val('data_coleta_sorologia')), 31, 10, 8);
+      p2.boxCode(397, 208, formatDateBR(val('data_coleta_outra_amostra')), 31, 10, 8);
+      p2.text(641, 208, val('tipo_exame'), 10, 560);
+
+      const obito = optionCode(val('obito'));
+      const obitoMarks = { '1': [201, 290], '2': [270, 290], '9': [344, 290] };
+      if (obitoMarks[obito]) p2.check(obitoMarks[obito][0], obitoMarks[obito][1], 10);
+
+      const contato = optionCode(val('contato_caso_semelhante'));
+      const contatoMarks = { '1': [812, 290], '2': [880, 290], '9': [956, 290] };
+      if (contatoMarks[contato]) p2.check(contatoMarks[contato][0], contatoMarks[contato][1], 10);
+
+      const exantema = optionCode(val('presenca_exantema'));
+      const exaMarks = { '1': [203, 376], '2': [272, 376], '9': [345, 376] };
+      if (exaMarks[exantema]) p2.check(exaMarks[exantema][0], exaMarks[exantema][1], 10);
+
+      p2.boxCode(481, 376, formatDateBR(val('data_inicio_exantema')), 31, 10, 8);
+
+      const petequias = optionCode(val('petequias_hemorragicas'));
+      const petMarks = { '1': [868, 376], '2': [937, 376], '9': [1011, 376] };
+      if (petMarks[petequias]) p2.check(petMarks[petequias][0], petMarks[petequias][1], 10);
+
+      const liquor = optionCode(val('liquor'));
+      const liquorMarks = { '1': [167, 460], '2': [236, 460], '9': [309, 460] };
+      if (liquorMarks[liquor]) p2.check(liquorMarks[liquor][0], liquorMarks[liquor][1], 10);
+
+      p2.text(464, 460, val('resultado_bacterioscopia'), 10, 720);
+
+      const vacina = optionCode(val('tomou_vacina'));
+      const vacMarks = { '1': [198, 548], '2': [267, 548], '9': [342, 548] };
+      if (vacMarks[vacina]) p2.check(vacMarks[vacina][0], vacMarks[vacina][1], 10);
+
+      p2.boxCode(395, 548, formatDateBR(val('data_ultima_dose')), 31, 10, 8);
+
+      const hosp = optionCode(val('hospitalizacao'));
+      const hospMarks = { '1': [681, 548], '2': [750, 548], '9': [824, 548] };
+      if (hospMarks[hosp]) p2.check(hospMarks[hosp][0], hospMarks[hosp][1], 10);
+
+      p2.boxCode(978, 548, formatDateBR(val('data_hospitalizacao')), 31, 10, 8);
+      p2.boxCode(126, 637, val('uf_hospital').toUpperCase(), 31, 10, 2);
+      p2.text(198, 637, val('municipio_hospital'), 10, 305);
+      p2.boxCode(483, 637, onlyDigits(val('ibge_hospital')), 31, 10, 6);
+      p2.text(704, 637, val('nome_hospital'), 10, 320);
+      p2.boxCode(1034, 637, onlyDigits(val('codigo_hospital')), 31, 10, 5);
+
+      p2.text(385, 850, val('hipotese_diagnostica_1'), 10, 790);
+      p2.text(385, 922, val('hipotese_diagnostica_2'), 10, 790);
+
+      p2.text(155, 1033, val('pais_infeccao'), 10, 430);
+      p2.boxCode(678, 1033, val('uf_infeccao').toUpperCase(), 31, 10, 2);
+      p2.text(815, 1033, val('municipio_infeccao'), 10, 380);
+      p2.text(182, 1115, val('distrito_infeccao'), 10, 390);
+      p2.text(816, 1115, val('bairro_infeccao'), 10, 380);
+
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
+      const filename = `${debugGrid ? 'ficha-surto-debug' : 'ficha-surto-oficial'}-${new Date().toISOString().slice(0, 10)}.pdf`;
+
       const a = document.createElement('a');
       a.href = url;
-      a.download = `ficha-investigacao-surto-${new Date().toISOString().slice(0,10)}.pdf`;
+      a.download = filename;
       a.click();
       setTimeout(() => URL.revokeObjectURL(url), 2000);
-    } catch (err) {
-      console.error(err);
-      alert('Erro ao gerar o PDF.');
+    } catch (error) {
+      console.error(error);
+      alert('Não foi possível gerar o PDF oficial. Verifique se o arquivo base Notificacao_Individual_v5.pdf está na mesma pasta do HTML.');
     } finally {
       exportBtn.disabled = false;
-      exportBtn.textContent = 'Exportar PDF';
+      exportBtn.textContent = 'Exportar PDF oficial';
     }
+  }
+
+  function clearForm() {
+    form.reset();
   }
 
   function fillSample() {
-    form.elements['numero_notificacao'].value = '20260320001';
-    form.elements['agravo_doenca'].value = 'Doença diarreica aguda';
-    form.elements['data_notificacao'].value = '2026-03-20';
-    form.elements['uf_notificacao'].value = 'PA';
-    form.elements['municipio_notificacao'].value = 'Santarém';
-    form.elements['ibge_notificacao'].value = '150680';
-    form.elements['cid10'].value = 'A09';
-    form.elements['unidade_notificadora'].value = 'UBS Central';
-    form.elements['codigo_unidade'].value = '1234567';
-    form.elements['data_primeiros_sintomas'].value = '2026-03-18';
-    form.elements['numero_casos_suspeitos'].value = '12';
-    form.elements['local_inicial_surto'].value = '3 - Creche / Escola';
-    form.elements['uf_residencia'].value = 'PA';
-    form.elements['municipio_residencia'].value = 'Santarém';
-    form.elements['ibge_residencia'].value = '150680';
-    form.elements['distrito_residencia'].value = 'Sede';
-    form.elements['bairro_residencia'].value = 'Centro';
-    form.elements['logradouro_residencia'].value = 'Rua Exemplo';
-    form.elements['codigo_logradouro'].value = '123';
-    form.elements['numero_residencia'].value = '120';
-    form.elements['complemento_residencia'].value = 'Casa';
-    form.elements['geo1'].value = '-2.4385';
-    form.elements['geo2'].value = '-54.6996';
-    form.elements['ponto_referencia'].value = 'Próximo à praça';
-    form.elements['cep'].value = '68005000';
-    form.elements['telefone'].value = '93991234567';
-    form.elements['zona_residencia'].value = '1 - Urbana';
-    form.elements['data_investigacao'].value = '2026-03-20';
-    form.elements['modo_transmissao'].value = '2 - Indireta (Veículo comum ou Vetor)';
-    form.elements['veiculo_transmissao'].value = '1 - Alimento/Água';
-    form.elements['observacoes'].value = 'Surto com concentração inicial em ambiente escolar, com investigação iniciada no mesmo dia da notificação e orientação imediata à unidade local.';
-    form.elements['notificante_municipio_unidade'].value = 'Santarém / Vigilância Epidemiológica';
-    form.elements['codigo_unid_saude'].value = '7654321';
-    form.elements['notificante_nome'].value = 'Profissional Exemplo';
-    form.elements['notificante_funcao'].value = 'Enfermeiro';
-    form.elements['notificante_assinatura'].value = 'Assinado digitalmente';
+    setValue('tipo_notificacao', '3 - Surto');
+    setValue('agravo_doenca', 'Doença diarreica aguda');
+    setValue('data_notificacao', '2026-03-20');
+    setValue('uf_notificacao', 'PA');
+    setValue('municipio_notificacao', 'Santarém');
+    setValue('ibge_notificacao', '150680');
+    setValue('unidade_notificadora', 'UBS Central');
+    setValue('codigo_unidade', '123456');
+    setValue('data_primeiros_sintomas', '2026-03-18');
+    setValue('nome_paciente', 'PACIENTE EXEMPLO');
+    setValue('data_nascimento', '2010-08-12');
+    setValue('idade', '15');
+    setValue('tipo_idade', '4 - Ano');
+    setValue('sexo', 'M - Masculino');
+    setValue('gestante', '6 - Não se aplica');
+    setValue('raca_cor', '4 - Parda');
+    setValue('escolaridade', '6 - Ensino médio completo (antigo colegial ou 2º grau)');
+    setValue('cartao_sus', '123456789012345');
+    setValue('nome_mae', 'RESPONSÁVEL EXEMPLO');
+    setValue('data_primeiros_sintomas_caso_suspeito', '2026-03-17');
+    setValue('numero_casos_suspeitos', '12');
+    setValue('local_inicial_surto', '3 - Creche / Escola');
+    setValue('uf_residencia', 'PA');
+    setValue('municipio_residencia', 'Santarém');
+    setValue('ibge_residencia', '150680');
+    setValue('distrito_residencia', 'Sede');
+    setValue('bairro_residencia', 'Centro');
+    setValue('logradouro_residencia', 'Rua Exemplo');
+    setValue('numero_residencia', '120');
+    setValue('complemento_residencia', 'Casa');
+    setValue('cep', '68005000');
+    setValue('telefone', '93991234567');
+    setValue('zona_residencia', '1 - Urbana');
+    setValue('notificante_municipio_unidade', 'Secretaria Municipal de Saúde');
+    setValue('notificante_nome', 'Profissional Exemplo');
+    setValue('notificante_funcao', 'Enfermeiro');
+    setValue('notificante_assinatura', 'Assinado');
+    setValue('data_coleta_sorologia', '2026-03-20');
+    setValue('tipo_exame', 'Coprocultura');
+    setValue('obito', '2 - Não');
+    setValue('contato_caso_semelhante', '1 - Sim');
+    setValue('presenca_exantema', '2 - Não');
+    setValue('petequias_hemorragicas', '2 - Não');
+    setValue('liquor', '2 - Não');
+    setValue('hospitalizacao', '2 - Não');
+    setValue('hipotese_diagnostica_1', 'A09 - Diarreia e gastroenterite de origem infecciosa presumível');
+    setValue('pais_infeccao', 'Brasil');
+    setValue('uf_infeccao', 'PA');
+    setValue('municipio_infeccao', 'Santarém');
+    setValue('distrito_infeccao', 'Sede');
+    setValue('bairro_infeccao', 'Centro');
   }
 
-  clearBtn?.addEventListener('click', () => form.reset());
+  toggleGridBtn?.addEventListener('click', () => {
+    debugGrid = !debugGrid;
+    toggleGridBtn.textContent = `Grade debug: ${debugGrid ? 'ligada' : 'desligada'}`;
+    toggleGridBtn.classList.toggle('active', debugGrid);
+  });
+
+  exportBtn?.addEventListener('click', exportOfficialPdf);
+  clearBtn?.addEventListener('click', clearForm);
   fillSampleBtn?.addEventListener('click', fillSample);
-  exportBtn?.addEventListener('click', exportPDF);
 })();
